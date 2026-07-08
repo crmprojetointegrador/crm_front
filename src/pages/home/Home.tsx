@@ -82,7 +82,7 @@ function Home() {
             padding: "1rem"
           }}
           >
-            <img src="https://ik.imagekit.io/bruumendes/ideia_logo.svg?updatedAt=1783529609749"
+            <img src="https://ik.imagekit.io/bruumendes/gemini-svg%20(5).svg"
               alt="logo inicial para página home"
               style={{
                 width: "85%"
