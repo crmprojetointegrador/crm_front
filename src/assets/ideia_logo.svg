@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="intelio-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a717eb" />
+      <stop offset="100%" stop-color="#00e8ff" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(15, 10)">
+    <path d="M40 100 A 45 45 0 1 1 115 135" stroke="#a717eb" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.4" />
+    <path d="M125 90 A 45 45 0 0 1 70 145" stroke="#00e8ff" stroke-width="12" stroke-linecap="round" fill="none" />
+    
+    <path d="M65 65 L95 95 L140 50 M140 50 H115 M140 50 V75" 
+          stroke="url(#intelio-grad)" 
+          stroke-width="10" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          fill="none"/>
+  </g>
+
+  <text x="210" y="112" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" letter-spacing="-0.5">
+    Inteli<tspan fill="#00e8ff">Cob</tspan>
+  </text>
+  
+  <text x="214" y="145" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#a717eb" letter-spacing="6">
+    ORGANIZAÇÃO DE ATIVOS INTELIGENTE
+  </text>
+</svg>

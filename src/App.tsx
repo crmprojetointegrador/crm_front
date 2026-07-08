@@ -8,6 +8,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <div className="min-h-[80vh]">
+         <Home />
       </div>
       <Footer />
       </BrowserRouter>
