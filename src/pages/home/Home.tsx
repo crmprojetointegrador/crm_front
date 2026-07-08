@@ -20,24 +20,37 @@ function Home() {
           <div style={{
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
-            alignContent: "center",
+            gap: "1.5rem",
+            alignItems: "center",
             justifyContent: "center",
             paddingTop: "2rem",
             paddingBottom: "2rem",
-            paddingLeft: "1rem",
           }}
           >
             <h2 style={{
               fontSize: "3rem",
               fontWeight: "bold",
+              textAlign: "center",
+              lineHeight: "1.2"
             }}
             >
-              InteliCob
+              Olá usuário,<br />
+
+              <span style={{
+                background: 'linear-gradient(to right, #ffffff, #00e8ff)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block'
+              }}>
+                bem-vindo ao
+              </span><br />
+
+              <span style={{ color: "#ffffff" }}>InteliCob</span>
             </h2>
 
             <p style={{
-              fontSize: "1.25rem"
+              fontSize: "1.25rem",
+              textAlign: "center"
             }}
             >
               Onde organizar as finanças é simples e rápido.
@@ -45,8 +58,8 @@ function Home() {
 
             <div style={{
               display: "flex",
-              justifyContent: "flex-start",
-              gap: "1rem"
+              justifyContent: "center",
+              width: "100%"
             }}
             >
               <div style={{
@@ -69,7 +82,7 @@ function Home() {
             padding: "1rem"
           }}
           >
-            <img src="https://ik.imagekit.io/bruumendes/gemini-svg%20(1).svg"
+            <img src="https://ik.imagekit.io/bruumendes/ideia_logo.svg?updatedAt=1783529609749"
               alt="logo inicial para página home"
               style={{
                 width: "85%"
