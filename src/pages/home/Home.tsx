@@ -33,7 +33,7 @@ function Home() {
               fontWeight: "bold",
             }}
             >
-              InteliCob
+              Bem-Vindo
             </h2>
 
             <p style={{
@@ -69,7 +69,7 @@ function Home() {
             padding: "1rem"
           }}
           >
-            <img src="https://ik.imagekit.io/bruumendes/gemini-svg%20(1).svg"
+            <img src="https://ik.imagekit.io/bruumendes/ideia_logo.svg?updatedAt=1783529609749"
               alt="logo inicial para página home"
               style={{
                 width: "85%"
