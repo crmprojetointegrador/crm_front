@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
 import Home from "./pages/home/Home";
+import About from './pages/About';
 
 import ListarProdutos from "./components/produto/listarproduto/ListarProduto";
 import FormProduto from "./components/produto/formproduto/FormProduto";
@@ -21,6 +22,12 @@ function App() {
             <Route
               path="/"
               element={<Home />}
+            />
+
+            {/* Sobre Nós */}
+            <Route
+              path="/about"
+              element={<About />}
             />
 
             {/* Lista de produtos */}
