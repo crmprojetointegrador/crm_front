@@ -1,58 +1,60 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Footer from "./components/footer/Footer";
+import Navbar from "./components/navbar/Navbar";
+import Home from "./pages/home/Home";
+
 import ListarProdutos from "./components/produto/listarproduto/ListarProduto";
 import FormProduto from "./components/produto/formproduto/FormProduto";
 import DeletarProduto from "./components/produto/deletarproduto/DeletarProduto";
 
-
 function App() {
-
   return (
+    <>
+      <BrowserRouter>
+        <Navbar />
 
-    <BrowserRouter>
+        <div className="min-h-[80vh]">
+          <Routes>
 
-      <Routes>
+            {/* Página inicial */}
+            <Route
+              path="/"
+              element={<Home />}
+            />
 
-        {/* Página inicial */}
-        <Route
-          path="/"
-          element={<ListarProdutos />}
-        />
+            {/* Lista de produtos */}
+            <Route
+              path="/produtos"
+              element={<ListarProdutos />}
+            />
 
+            {/* Cadastro de produto */}
+            <Route
+              path="/cadastrarproduto"
+              element={<FormProduto />}
+            />
 
-        {/* Lista de produtos */}
-        <Route
-          path="/produtos"
-          element={<ListarProdutos />}
-        />
+            {/* Editar produto */}
+            <Route
+              path="/editarproduto/:id"
+              element={<FormProduto />}
+            />
 
+            {/* Deletar produto */}
+            <Route
+              path="/deletarproduto/:id"
+              element={<DeletarProduto />}
+            />
 
-        {/* Cadastro de produto */}
-        <Route
-          path="/cadastrarproduto"
-          element={<FormProduto />}
-        />
+          </Routes>
+        </div>
 
+        <Footer />
 
-        {/* Editar produto */}
-        <Route
-          path="/editarproduto/:id"
-          element={<FormProduto />}
-        />
-
-
-        {/* Deletar produto */}
-        <Route
-          path="/deletarproduto/:id"
-          element={<DeletarProduto />}
-        />
-
-      </Routes>
-
-    </BrowserRouter>
-
+      </BrowserRouter>
+    </>
   );
-
 }
 
 export default App;
