@@ -18,11 +18,12 @@ function App() {
         <div className="min-h-[80vh]">
           <Routes>
 
-            {/* Página inicial */}
             <Route
               path="/"
-              element={<Home />}
-            />
+              element={<Home />} />
+
+            <Route
+              path="/home" element={<Home />} />
 
             {/* Sobre Nós */}
             <Route
@@ -36,19 +37,16 @@ function App() {
               element={<ListarProdutos />}
             />
 
-            {/* Cadastro de produto */}
             <Route
               path="/cadastrarproduto"
               element={<FormProduto />}
             />
 
-            {/* Editar produto */}
             <Route
               path="/editarproduto/:id"
               element={<FormProduto />}
             />
 
-            {/* Deletar produto */}
             <Route
               path="/deletarproduto/:id"
               element={<DeletarProduto />}
