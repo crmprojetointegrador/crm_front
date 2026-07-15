@@ -6,9 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import UsuarioService from "../../services/UsuarioService";
 
-// Tipo de conta criado por autocadastro. Não é exposto como campo no
-// formulário — permitir que o próprio usuário escolha o "tipo" na hora do
-// cadastro abriria brecha pra ele se autopromover, por exemplo, a admin.
 const TIPO_PADRAO = "USER";
 
 const cadastroSchema = z
