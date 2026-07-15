@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { isAxiosError } from "axios";
 import ProdutoService from "../../../services/ProdutoService";
 import CardProduto from "../cardproduto/CardProduto";
 
@@ -22,13 +23,14 @@ function ListarProdutos() {
     }
 
     if (isError) {
+        const sessaoExpirada = isAxiosError(error) && error.response?.status === 401;
+
         return (
             <div className="flex justify-center items-center py-16">
                 <p className="text-red-600">
-                    Não foi possível carregar as cobranças. Tente novamente em instantes.
-                    {error instanceof Error && (
-                        <span className="block text-sm text-gray-400 mt-1">{error.message}</span>
-                    )}
+                    {sessaoExpirada
+                        ? "Sua sessão expirou. Faça login novamente."
+                        : "Não foi possível carregar as cobranças. Tente novamente em instantes."}
                 </p>
             </div>
         );

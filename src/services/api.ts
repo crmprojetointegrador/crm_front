@@ -5,25 +5,31 @@ const api = axios.create({
 });
 
 // Anexa o token salvo no login em toda requisição, automaticamente.
+// O backend já devolve o token com o prefixo "Bearer " incluso na string
+// (ex: "Bearer eyJhbGci..."), então só adicionamos o prefixo se ele
+// ainda não estiver lá — evita "Bearer Bearer ..." e um 401 por causa disso.
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
 
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = token.startsWith("Bearer ")
+            ? token
+            : `Bearer ${token}`;
     }
 
     return config;
 });
 
 // Se o token expirar/for inválido, o backend responde 401.
-// Nesse caso, limpamos a sessão local — a UI decide o que fazer com isso
-// (ex: redirecionar para /login) através do AuthContext.
+// Limpamos a sessão local e avisamos o resto do app via evento — é o
+// AuthContext quem escuta isso e sincroniza o estado de usuário logado.
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem("token");
             localStorage.removeItem("usuario");
+            window.dispatchEvent(new Event("auth:unauthorized"));
         }
         return Promise.reject(error);
     }

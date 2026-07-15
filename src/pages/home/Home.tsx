@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Home() {
   return (
     <>
@@ -62,16 +64,17 @@ function Home() {
               width: "100%"
             }}
             >
-              <div style={{
+              <Link to="/cadastrarproduto" style={{
                 borderRadius: "0.5rem",
                 color: "white",
                 border: "2px solid white",
                 padding: "0.5rem 1.5rem",
-                cursor: "pointer"
+                cursor: "pointer",
+                textDecoration: "none",
               }}
               >
-                Novo Debito
-              </div>
+                Novo Débito
+              </Link>
             </div>
           </div>
 

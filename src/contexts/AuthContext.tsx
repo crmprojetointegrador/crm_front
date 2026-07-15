@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { UsuarioLogin } from "../models/UsuarioLogin";
 
 interface AuthContextData {
@@ -39,6 +39,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem("token");
         setUsuario(null);
     }
+
+    // Sincroniza o estado de autenticação sempre que uma chamada à API
+    // voltar 401 (token expirado/inválido) — sem isso, a Navbar continuava
+    // mostrando o usuário como logado mesmo com a sessão já morta.
+    useEffect(() => {
+        function handleUnauthorized() {
+            setUsuario(null);
+        }
+
+        window.addEventListener("auth:unauthorized", handleUnauthorized);
+        return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    }, []);
 
     return (
         <AuthContext.Provider
