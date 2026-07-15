@@ -1,111 +1,153 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useContext, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ProdutoService from "../../../services/ProdutoService";
-import CategoriaService from "../../../services/CategoriaService";
+import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
+import type { Categoria } from "../../../models/Categoria";
+import { atualizar, buscar, cadastrar } from "../../../services/Service";
+import { ClipLoader } from "react-spinners";
 
 const STATUS_OPCOES = ["Pendente", "Pago", "Atrasado"];
 
-const produtoSchema = z.object({
-    nome: z.string().min(3, "Informe o nome da cobrança"),
-    valorDebito: z.coerce.number().positive("Informe um valor maior que zero"),
-    dataDebito: z.string().min(1, "Informe a data do débito"),
-    status: z.string().min(1, "Selecione um status"),
-    categoriaId: z.coerce.number().min(1, "Selecione uma categoria"),
-});
-
-type ProdutoFormData = z.infer<typeof produtoSchema>;
-
 function FormProduto() {
+
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const emEdicao = Boolean(id);
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const [erro, setErro] = useState("");
 
-    const { data: categorias } = useQuery({
-        queryKey: ["categorias"],
-        queryFn: async () => (await CategoriaService.getAll()).data,
-    });
+    const [produto, setProduto] = useState<Produto>({
+        id: 0,
+        nome: '',
+        valorDebito: 0,
+        dataDebito: '',
+        status: '',
+        categoria: null,
+        usuario: null
+    })
 
-    const { data: produtoAtual, isLoading: carregandoProduto } = useQuery({
-        queryKey: ["produtos", id],
-        queryFn: async () => (await ProdutoService.getById(Number(id))).data,
-        enabled: emEdicao,
-    });
+    const [categorias, setCategorias] = useState<Categoria[]>([])
+    const [categoriaId, setCategoriaId] = useState<string>('')
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<ProdutoFormData>({
-        resolver: zodResolver(produtoSchema),
-    });
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [erro, setErro] = useState('')
 
-    // Assim que a cobrança existente chega da API, preenche o formulário.
+    const { usuario, handleLogout } = useContext(AuthContext)
+    const token = usuario.token
+
     useEffect(() => {
-        if (produtoAtual) {
-            reset({
-                nome: produtoAtual.nome,
-                valorDebito: produtoAtual.valorDebito,
-                dataDebito: produtoAtual.dataDebito,
-                status: produtoAtual.status,
-                categoriaId: produtoAtual.categoria?.id ?? 0,
-            });
+        if (token === '') {
+            alert('Você precisa estar logado!')
+            navigate('/login')
         }
-    }, [produtoAtual, reset]);
+    }, [token])
 
-    const mutation = useMutation({
-        mutationFn: async (dados: ProdutoFormData) => {
-            const categoria = categorias?.find((c) => c.id === dados.categoriaId) ?? null;
+    useEffect(() => {
+        buscarCategorias()
+        if (id !== undefined) {
+            buscarPorId(id)
+        }
+    }, [id])
 
-            const payload: Produto = {
-                id: emEdicao ? Number(id) : 0,
-                nome: dados.nome,
-                valorDebito: dados.valorDebito,
-                dataDebito: dados.dataDebito,
-                status: dados.status,
-                categoria,
-                usuario: produtoAtual?.usuario ?? null,
-            };
-
-            return emEdicao ? ProdutoService.put(payload) : ProdutoService.post(payload);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["produtos"] });
-            navigate("/produtos");
-        },
-        onError: () => {
-            setErro("Não foi possível salvar a cobrança. Confira os dados e tente novamente.");
-        },
-    });
-
-    function onSubmit(dados: ProdutoFormData) {
-        setErro("");
-        mutation.mutate(dados);
+    async function buscarCategorias() {
+        try {
+            await buscar('/categorias', setCategorias, {
+                headers: { Authorization: token }
+            })
+        } catch (error: any) {
+            if (error.toString().includes('401')) {
+                handleLogout()
+            }
+        }
     }
 
-    if (emEdicao && carregandoProduto) {
-        return (
-            <div className="flex justify-center items-center py-16">
-                <p className="text-gray-500">Carregando cobrança...</p>
-            </div>
-        );
+    async function buscarPorId(id: string) {
+        try {
+            await buscar(`/produtos/${id}`, (dados: Produto) => {
+                setProduto(dados)
+                setCategoriaId(dados.categoria ? String(dados.categoria.id) : '')
+            }, {
+                headers: { Authorization: token }
+            })
+        } catch (error: any) {
+            if (error.toString().includes('401')) {
+                handleLogout()
+            }
+        }
+    }
+
+    function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+        setProduto({
+            ...produto,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    function atualizarCategoria(e: ChangeEvent<HTMLSelectElement>) {
+        setCategoriaId(e.target.value)
+    }
+
+    function atualizarStatus(e: ChangeEvent<HTMLSelectElement>) {
+        setProduto({
+            ...produto,
+            status: e.target.value
+        })
+    }
+
+    function retornar() {
+        navigate('/produtos')
+    }
+
+    async function gerarNovoProduto(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        setErro('')
+
+        if (!produto.nome || !produto.dataDebito || !produto.status || !categoriaId) {
+            setErro('Preencha todos os campos.')
+            return
+        }
+
+        setIsLoading(true)
+
+        const categoriaSelecionada = categorias.find((c) => c.id === Number(categoriaId)) ?? null
+
+        const payload: Produto = {
+            ...produto,
+            id: emEdicao ? Number(id) : 0,
+            valorDebito: Number(produto.valorDebito),
+            categoria: categoriaSelecionada
+        }
+
+        try {
+            if (emEdicao) {
+                await atualizar('/produtos', payload, setProduto, {
+                    headers: { Authorization: token }
+                })
+                alert('Cobrança atualizada com sucesso!')
+            } else {
+                await cadastrar('/produtos', payload, setProduto, {
+                    headers: { Authorization: token }
+                })
+                alert('Cobrança cadastrada com sucesso!')
+            }
+            retornar()
+        } catch (error: any) {
+            if (error.toString().includes('401')) {
+                handleLogout()
+            } else {
+                setErro('Não foi possível salvar a cobrança. Confira os dados e tente novamente.')
+            }
+        }
+
+        setIsLoading(false)
     }
 
     return (
         <div className="flex justify-center items-center py-16 px-4">
             <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={gerarNovoProduto}
                 className="w-full max-w-md bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
             >
                 <h1 className="text-2xl font-bold text-center text-gray-800">
-                    {emEdicao ? "Editar Cobrança" : "Nova Cobrança"}
+                    {emEdicao ? 'Editar Cobrança' : 'Nova Cobrança'}
                 </h1>
 
                 {erro && (
@@ -118,13 +160,12 @@ function FormProduto() {
                     </label>
                     <input
                         id="nome"
+                        name="nome"
                         type="text"
-                        {...register("nome")}
+                        value={produto.nome}
+                        onChange={atualizarEstado}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
-                    {errors.nome && (
-                        <span className="text-xs text-red-600">{errors.nome.message}</span>
-                    )}
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -133,15 +174,14 @@ function FormProduto() {
                     </label>
                     <input
                         id="valorDebito"
+                        name="valorDebito"
                         type="number"
                         step="0.01"
                         min="0"
-                        {...register("valorDebito")}
+                        value={produto.valorDebito}
+                        onChange={atualizarEstado}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
-                    {errors.valorDebito && (
-                        <span className="text-xs text-red-600">{errors.valorDebito.message}</span>
-                    )}
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -150,13 +190,12 @@ function FormProduto() {
                     </label>
                     <input
                         id="dataDebito"
+                        name="dataDebito"
                         type="date"
-                        {...register("dataDebito")}
+                        value={produto.dataDebito}
+                        onChange={atualizarEstado}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
-                    {errors.dataDebito && (
-                        <span className="text-xs text-red-600">{errors.dataDebito.message}</span>
-                    )}
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -165,8 +204,8 @@ function FormProduto() {
                     </label>
                     <select
                         id="status"
-                        defaultValue=""
-                        {...register("status")}
+                        value={produto.status}
+                        onChange={atualizarStatus}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                         <option value="" disabled>Selecione...</option>
@@ -174,9 +213,6 @@ function FormProduto() {
                             <option key={status} value={status}>{status}</option>
                         ))}
                     </select>
-                    {errors.status && (
-                        <span className="text-xs text-red-600">{errors.status.message}</span>
-                    )}
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -185,21 +221,18 @@ function FormProduto() {
                     </label>
                     <select
                         id="categoriaId"
-                        defaultValue=""
-                        {...register("categoriaId")}
+                        value={categoriaId}
+                        onChange={atualizarCategoria}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                         <option value="" disabled>Selecione...</option>
-                        {categorias?.map((categoria) => (
+                        {categorias.map((categoria) => (
                             <option key={categoria.id} value={categoria.id}>
                                 {categoria.nome}
                             </option>
                         ))}
                     </select>
-                    {errors.categoriaId && (
-                        <span className="text-xs text-red-600">{errors.categoriaId.message}</span>
-                    )}
-                    {categorias?.length === 0 && (
+                    {categorias.length === 0 && (
                         <span className="text-xs text-gray-500">Nenhuma categoria cadastrada ainda.</span>
                     )}
                 </div>
@@ -207,17 +240,20 @@ function FormProduto() {
                 <div className="flex gap-3 mt-2">
                     <button
                         type="button"
-                        onClick={() => navigate("/produtos")}
+                        onClick={retornar}
                         className="flex-1 border border-gray-300 text-gray-700 rounded-md py-2 hover:bg-gray-50"
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-                        disabled={mutation.isPending}
-                        className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 disabled:opacity-60"
+                        className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
+                        disabled={isLoading}
                     >
-                        {mutation.isPending ? "Salvando..." : "Salvar"}
+                        {isLoading ?
+                            <ClipLoader color="#ffffff" size={20} /> :
+                            <span>Salvar</span>
+                        }
                     </button>
                 </div>
             </form>

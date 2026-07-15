@@ -1,195 +1,189 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Link, useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
-import UsuarioService from "../../services/UsuarioService";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
+import { cadastrarUsuario } from "../../services/Service"
+import { ClipLoader } from "react-spinners"
+import { useNavigate } from "react-router-dom"
+import type { Usuario } from "../../models/Usuario"
 
-const TIPO_PADRAO = "USER";
-
-const cadastroSchema = z
-    .object({
-        nome: z.string().min(3, "Informe seu nome completo"),
-        cpf: z
-            .string()
-            .min(11, "CPF deve ter 11 dígitos")
-            .max(11, "CPF deve ter 11 dígitos")
-            .regex(/^\d+$/, "CPF deve conter apenas números"),
-        dataNascimento: z.string().min(1, "Informe a data de nascimento"),
-        email: z.string().email("Informe um e-mail válido"),
-        senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-        confirmarSenha: z.string().min(1, "Confirme a senha"),
-    })
-    .refine((dados) => dados.senha === dados.confirmarSenha, {
-        message: "As senhas não coincidem",
-        path: ["confirmarSenha"],
-    });
-
-type CadastroFormData = z.infer<typeof cadastroSchema>;
+const TIPO_PADRAO = "USER"
 
 function Cadastro() {
-    const navigate = useNavigate();
-    const [erro, setErro] = useState("");
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<CadastroFormData>({
-        resolver: zodResolver(cadastroSchema),
-    });
+    const navigate = useNavigate()
 
-    async function onSubmit(dados: CadastroFormData) {
-        setErro("");
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
-        try {
-            await UsuarioService.cadastrar({
-                nome: dados.nome,
-                cpf: dados.cpf,
-                dataNascimento: dados.dataNascimento,
-                email: dados.email,
-                senha: dados.senha,
-                tipo: TIPO_PADRAO,
-            });
+    const [confirmarSenha, setConfirmaSenha] = useState<string>("")
 
-            navigate("/login", { state: { cadastroConcluido: true } });
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 400) {
-                setErro("Não foi possível cadastrar. Confira os dados informados.");
-            } else {
-                setErro("Não foi possível cadastrar. Tente novamente em instantes.");
-            }
+    const [usuario, setUsuario] = useState<Usuario>({
+        id: 0,
+        nome: '',
+        cpf: '',
+        dataNascimento: '',
+        email: '',
+        senha: '',
+        tipo: TIPO_PADRAO
+    })
+
+    useEffect(() => {
+        if (usuario.id !== 0) {
+            retornar()
         }
+    }, [usuario])
+
+    function retornar() {
+        navigate('/login')
     }
+
+    function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+        setUsuario({
+            ...usuario,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    function handleConfirmarSenha(e: ChangeEvent<HTMLInputElement>) {
+        setConfirmaSenha(e.target.value)
+    }
+
+    async function cadastrarNovoUsuario(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+
+        if (confirmarSenha === usuario.senha && usuario.senha.length >= 6) {
+
+            setIsLoading(true)
+
+            try {
+                await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario)
+                alert('Usuário cadastrado com sucesso!')
+            } catch (error) {
+                alert('Erro ao cadastrar o usuário!')
+            }
+        } else {
+            alert('Dados do usuário inconsistentes! Verifique as informações do cadastro.')
+            setUsuario({ ...usuario, senha: '' })
+            setConfirmaSenha('')
+        }
+
+        setIsLoading(false)
+    }
+
 
     return (
         <div className="flex justify-center items-center py-16 px-4">
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-sm bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
-            >
-                <h1 className="text-2xl font-bold text-center text-gray-800">Criar conta</h1>
+            <form className='flex justify-center items-center flex-col w-full max-w-sm gap-3'
+                onSubmit={cadastrarNovoUsuario}>
 
-                {erro && (
-                    <p className="text-sm text-red-600 text-center">{erro}</p>
-                )}
+                <h2 className='text-slate-900 text-3xl font-bold'>Cadastrar</h2>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="nome" className="text-sm font-medium text-gray-700">
-                        Nome completo
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="nome" className="text-sm font-medium text-gray-700">Nome completo</label>
                     <input
+                        type="text"
                         id="nome"
-                        type="text"
+                        name="nome"
+                        placeholder="Nome"
                         autoComplete="name"
-                        {...register("nome")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuario.nome}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.nome && (
-                        <span className="text-xs text-red-600">{errors.nome.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="cpf" className="text-sm font-medium text-gray-700">
-                        CPF
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="cpf" className="text-sm font-medium text-gray-700">CPF</label>
                     <input
-                        id="cpf"
                         type="text"
-                        inputMode="numeric"
+                        id="cpf"
+                        name="cpf"
                         placeholder="Somente números"
+                        inputMode="numeric"
                         autoComplete="off"
-                        {...register("cpf")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuario.cpf}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.cpf && (
-                        <span className="text-xs text-red-600">{errors.cpf.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="dataNascimento" className="text-sm font-medium text-gray-700">
-                        Data de nascimento
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="dataNascimento" className="text-sm font-medium text-gray-700">Data de nascimento</label>
                     <input
-                        id="dataNascimento"
                         type="date"
+                        id="dataNascimento"
+                        name="dataNascimento"
                         autoComplete="bday"
-                        {...register("dataNascimento")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuario.dataNascimento}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.dataNascimento && (
-                        <span className="text-xs text-red-600">{errors.dataNascimento.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                        E-mail
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail</label>
                     <input
-                        id="email"
                         type="email"
+                        id="email"
+                        name="email"
+                        placeholder="E-mail"
                         autoComplete="email"
-                        {...register("email")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuario.email}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.email && (
-                        <span className="text-xs text-red-600">{errors.email.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="senha" className="text-sm font-medium text-gray-700">
-                        Senha
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="senha" className="text-sm font-medium text-gray-700">Senha</label>
                     <input
+                        type="password"
                         id="senha"
-                        type="password"
+                        name="senha"
+                        placeholder="Senha"
                         autoComplete="new-password"
-                        {...register("senha")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuario.senha}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.senha && (
-                        <span className="text-xs text-red-600">{errors.senha.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="confirmarSenha" className="text-sm font-medium text-gray-700">
-                        Confirmar senha
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="confirmarSenha" className="text-sm font-medium text-gray-700">Confirmar Senha</label>
                     <input
-                        id="confirmarSenha"
                         type="password"
+                        id="confirmarSenha"
+                        name="confirmarSenha"
+                        placeholder="Confirmar Senha"
                         autoComplete="new-password"
-                        {...register("confirmarSenha")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={confirmarSenha}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleConfirmarSenha(e)}
                     />
-                    {errors.confirmarSenha && (
-                        <span className="text-xs text-red-600">{errors.confirmarSenha.message}</span>
-                    )}
                 </div>
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="mt-2 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 disabled:opacity-60"
-                >
-                    {isSubmitting ? "Cadastrando..." : "Cadastrar"}
-                </button>
+                <div className="flex justify-around w-full gap-4 mt-2">
+                    <button
+                        type='button'
+                        className='rounded-md text-white bg-red-400 hover:bg-red-700 w-1/2 py-2'
+                        onClick={retornar}
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type='submit'
+                        className='rounded-md text-white bg-gradient-to-r from-[#a717eb] to-[#00e8ff] w-1/2 py-2 flex justify-center'
+                    >
+                        {isLoading ?
+                            <ClipLoader
+                                color="#ffffff"
+                                size={24}
+                            /> :
 
-                <p className="text-sm text-center text-gray-600">
-                    Já tem conta?{" "}
-                    <Link to="/login" className="text-purple-700 hover:underline">
-                        Entrar
-                    </Link>
-                </p>
+                            <span>Cadastrar</span>
+                        }
+                    </button>
+                </div>
             </form>
         </div>
-    );
+    )
 }
 
-export default Cadastro;
+export default Cadastro

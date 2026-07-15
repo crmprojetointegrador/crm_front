@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
@@ -16,6 +18,7 @@ import RotaProtegida from "./routes/RotaProtegida";
 function App() {
   return (
     <>
+      <ToastContainer />
       <BrowserRouter>
         <Navbar />
 

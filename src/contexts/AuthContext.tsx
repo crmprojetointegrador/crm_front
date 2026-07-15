@@ -1,72 +1,59 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { UsuarioLogin } from "../models/UsuarioLogin";
+import { createContext, type ReactNode, useState } from "react"
 
-interface AuthContextData {
-    usuario: UsuarioLogin | null;
-    isAuthenticated: boolean;
-    login: (dadosUsuario: UsuarioLogin) => void;
-    logout: () => void;
+import type { UsuarioLogin } from "../models/UsuarioLogin"
+import { login } from "../services/Service"
+import { ToastAlerta } from "../utils/ToastAlerta"
+
+interface AuthContextProps {
+    usuario: UsuarioLogin
+    handleLogout(): void
+    handleLogin(usuario: UsuarioLogin): Promise<void>
+    isLoading: boolean
 }
 
-const AuthContext = createContext<AuthContextData | undefined>(undefined);
-
-function getUsuarioSalvo(): UsuarioLogin | null {
-    const bruto = localStorage.getItem("usuario");
-    if (!bruto) return null;
-
-    try {
-        return JSON.parse(bruto) as UsuarioLogin;
-    } catch {
-        return null;
-    }
+interface AuthProviderProps {
+    children: ReactNode
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-    const [usuario, setUsuario] = useState<UsuarioLogin | null>(getUsuarioSalvo);
+export const AuthContext = createContext({} as AuthContextProps)
 
-    function login(dadosUsuario: UsuarioLogin) {
-        localStorage.setItem("usuario", JSON.stringify(dadosUsuario));
+export function AuthProvider({ children }: AuthProviderProps) {
 
-        if (dadosUsuario.token) {
-            localStorage.setItem("token", dadosUsuario.token);
+    const [usuario, setUsuario] = useState<UsuarioLogin>({
+        id: 0,
+        nome: "",
+        cpf: "",
+        senha: "",
+        token: ""
+    })
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    async function handleLogin(usuarioLogin: UsuarioLogin) {
+        setIsLoading(true)
+
+        try {
+            await login(`/usuarios/logar`, usuarioLogin, setUsuario)
+            ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso")
+        } catch (error) {
+            ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro")
         }
-
-        setUsuario(dadosUsuario);
+        setIsLoading(false)
     }
 
-    function logout() {
-        localStorage.removeItem("usuario");
-        localStorage.removeItem("token");
-        setUsuario(null);
+    function handleLogout() {
+        setUsuario({
+            id: 0,
+            nome: "",
+            cpf: "",
+            senha: "",
+            token: ""
+        })
     }
-
-    // Sincroniza o estado de autenticação sempre que uma chamada à API
-    // voltar 401 (token expirado/inválido) — sem isso, a Navbar continuava
-    // mostrando o usuário como logado mesmo com a sessão já morta.
-    useEffect(() => {
-        function handleUnauthorized() {
-            setUsuario(null);
-        }
-
-        window.addEventListener("auth:unauthorized", handleUnauthorized);
-        return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
-    }, []);
 
     return (
-        <AuthContext.Provider
-            value={{ usuario, isAuthenticated: !!usuario, login, logout }}
-        >
+        <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
             {children}
         </AuthContext.Provider>
-    );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-
-    if (!context) {
-        throw new Error("useAuth precisa ser usado dentro de um <AuthProvider>");
-    }
-
-    return context;
+    )
 }

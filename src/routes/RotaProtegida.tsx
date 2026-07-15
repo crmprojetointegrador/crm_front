@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
-import type { ReactNode } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useContext, type ReactNode } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 interface RotaProtegidaProps {
     children: ReactNode;
 }
 
 function RotaProtegida({ children }: RotaProtegidaProps) {
-    const { isAuthenticated } = useAuth();
+    const { usuario } = useContext(AuthContext);
 
-    if (!isAuthenticated) {
+    if (usuario.token === "") {
         return <Navigate to="/login" replace />;
     }
 

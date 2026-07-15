@@ -1,113 +1,88 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
-import UsuarioService from "../../services/UsuarioService";
-import { useAuth } from "../../contexts/AuthContext";
-
-const loginSchema = z.object({
-    cpf: z.string().min(1, "Informe o CPF"),
-    senha: z.string().min(1, "Informe a senha"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { useContext, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import type { UsuarioLogin } from "../../models/UsuarioLogin";
+import { AuthContext } from "../../contexts/AuthContext";
 
 function Login() {
+
     const navigate = useNavigate();
-    const location = useLocation();
-    const { login } = useAuth();
-    const [erro, setErro] = useState("");
 
-    const cadastroConcluido = Boolean(
-        (location.state as { cadastroConcluido?: boolean } | null)?.cadastroConcluido
-    );
+    const { usuario, handleLogin, isLoading } = useContext(AuthContext)
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-    });
+    const [usuarioLogin, setUsuarioLogin] = useState<UsuarioLogin>(
+        {} as UsuarioLogin
+    )
 
-    async function onSubmit(dados: LoginFormData) {
-        setErro("");
-
-        try {
-            const resposta = await UsuarioService.logar(dados);
-            login(resposta.data);
-            navigate("/produtos");
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 401) {
-                setErro("CPF ou senha inválidos.");
-            } else {
-                setErro("Não foi possível entrar. Tente novamente em instantes.");
-            }
+    useEffect(() => {
+        if (usuario.token !== "") {
+            navigate('/produtos')
         }
+    }, [usuario])
+
+    function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+        setUsuarioLogin({
+            ...usuarioLogin,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    function login(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        handleLogin(usuarioLogin)
     }
 
     return (
         <div className="flex justify-center items-center py-16 px-4">
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="w-full max-w-sm bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
-            >
-                <h1 className="text-2xl font-bold text-center text-gray-800">Entrar</h1>
+            <form className="flex justify-center items-center flex-col w-full max-w-sm gap-4"
+                onSubmit={login}>
 
-                {cadastroConcluido && !erro && (
-                    <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2 text-center">
-                        Cadastro realizado! Entre com o CPF e a senha cadastrados.
-                    </p>
-                )}
+                <h2 className="text-slate-900 text-3xl font-bold">Entrar</h2>
 
-                {erro && (
-                    <p className="text-sm text-red-600 text-center">{erro}</p>
-                )}
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="cpf" className="text-sm font-medium text-gray-700">
-                        CPF
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="cpf" className="text-sm font-medium text-gray-700">CPF</label>
                     <input
-                        id="cpf"
                         type="text"
+                        id="cpf"
+                        name="cpf"
+                        placeholder="CPF"
                         autoComplete="username"
-                        {...register("cpf")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuarioLogin.cpf}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.cpf && (
-                        <span className="text-xs text-red-600">{errors.cpf.message}</span>
-                    )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="senha" className="text-sm font-medium text-gray-700">
-                        Senha
-                    </label>
+                <div className="flex flex-col w-full gap-1">
+                    <label htmlFor="senha" className="text-sm font-medium text-gray-700">Senha</label>
                     <input
-                        id="senha"
                         type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Senha"
                         autoComplete="current-password"
-                        {...register("senha")}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={usuarioLogin.senha}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
-                    {errors.senha && (
-                        <span className="text-xs text-red-600">{errors.senha.message}</span>
-                    )}
                 </div>
 
                 <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="mt-2 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 disabled:opacity-60"
-                >
-                    {isSubmitting ? "Entrando..." : "Entrar"}
+                    type='submit'
+                    className="rounded-md bg-gradient-to-r from-[#a717eb] to-[#00e8ff] flex justify-center hover:opacity-90 text-white w-full py-2">
+                    {isLoading ?
+                        <ClipLoader
+                            color="#ffffff"
+                            size={24}
+                        /> :
+                        <span>Entrar</span>
+                    }
                 </button>
 
-                <p className="text-sm text-center text-gray-600">
-                    Ainda não tem conta?{" "}
+                <hr className="border-slate-300 w-full" />
+
+                <p className="text-sm text-gray-600">
+                    Ainda não tem uma conta?{' '}
                     <Link to="/cadastro" className="text-purple-700 hover:underline">
                         Cadastre-se
                     </Link>
