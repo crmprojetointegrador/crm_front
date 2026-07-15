@@ -5,6 +5,7 @@ import Navbar from "./components/navbar/Navbar";
 import Home from "./pages/home/Home";
 import About from './pages/About';
 import Login from "./pages/login/Login";
+import Cadastro from "./pages/cadastro/Cadastro";
 
 import ListarProdutos from "./components/produto/listarproduto/ListarProduto";
 import FormProduto from "./components/produto/formproduto/FormProduto";
@@ -32,6 +33,12 @@ function App() {
             <Route
               path="/login"
               element={<Login />}
+            />
+
+            {/* Cadastro de usuário */}
+            <Route
+              path="/cadastro"
+              element={<Cadastro />}
             />
 
             {/* Sobre Nós */}

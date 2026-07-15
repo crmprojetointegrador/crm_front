@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import UsuarioService from "../../services/UsuarioService";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,8 +16,13 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
     const [erro, setErro] = useState("");
+
+    const cadastroConcluido = Boolean(
+        (location.state as { cadastroConcluido?: boolean } | null)?.cadastroConcluido
+    );
 
     const {
         register,
@@ -50,6 +55,12 @@ function Login() {
                 className="w-full max-w-sm bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
             >
                 <h1 className="text-2xl font-bold text-center text-gray-800">Entrar</h1>
+
+                {cadastroConcluido && !erro && (
+                    <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2 text-center">
+                        Cadastro realizado! Entre com o CPF e a senha cadastrados.
+                    </p>
+                )}
 
                 {erro && (
                     <p className="text-sm text-red-600 text-center">{erro}</p>
@@ -94,6 +105,13 @@ function Login() {
                 >
                     {isSubmitting ? "Entrando..." : "Entrar"}
                 </button>
+
+                <p className="text-sm text-center text-gray-600">
+                    Ainda não tem conta?{" "}
+                    <Link to="/cadastro" className="text-purple-700 hover:underline">
+                        Cadastre-se
+                    </Link>
+                </p>
             </form>
         </div>
     );
