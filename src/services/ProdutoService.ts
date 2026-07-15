@@ -1,9 +1,5 @@
-import axios from "axios";
+import api from "./api";
 import type { Produto } from "../models/Produto";
-
-const api = axios.create({
-    baseURL: "http://localhost:5173"
-});
 
 class ProdutoService {
 
