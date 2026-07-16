@@ -151,13 +151,49 @@ Antes de rodar o projeto localmente, certifique-se de que possui:
 
 ## 🔮 Próximos passos
 
-Ideias no radar pra evoluir o projeto:
+Ideias no radar pra evoluir o projeto, organizadas por frente:
 
-- 🖼️ Foto de perfil
-- 📞 Painel de histórico de contato com o devedor
-- 📊 Dashboard com métricas de recuperação
-- 💳 Parcelamento e juros no detalhe da dívida
-- 🔔 Notificações automáticas de vencimento
+### 🏛️ Papéis e governança
+- **Atendente/Backoffice**: cadastra a dívida e registra os contatos, mas não altera status sozinho.
+- **Admin**: aprova mudanças de status, gerencia usuários, vê tudo.
+- **Supervisor** (papel intermediário): acompanha metas do time sem ter todos os poderes de admin — comum em operações de cobrança reais, onde o admin do sistema raramente é quem opera no dia a dia.
+- **Trilha de auditoria**: registro de quem alterou o quê e quando (status, valor, categoria) — essencial em cobrança porque decisões financeiras precisam ser rastreáveis, inclusive por exigência legal.
+
+### 💰 Dívida mais fiel à realidade
+- Parcelas, taxa de juros, multa por atraso, valor original vs. valor atualizado.
+- Histórico de renegociação: cada proposta feita, aceita ou recusada — não só o status final.
+- Anexos: comprovante de pagamento, contrato, print de acordo.
+- Data de vencimento por parcela, não só uma data única.
+
+### 🗄️ Estruturação de backend
+- Trazer a entidade **Cliente** para a estrutura principal do projeto (hoje existe apenas em uma branch de testes, nunca chegou a ser integrada) — é o que falta para separar de fato quem é o devedor de quem opera o CRM.
+- Registro de informações de contato vinculado ao Cliente (telefone, e-mail, endereço, histórico de interações), servindo de base para o painel de relacionamento citado acima.
+
+### 📞 Relacionamento com o cliente
+- Timeline de interações: ligação, e-mail, WhatsApp, com resultado de cada uma ("sem resposta", "prometeu pagar dia X", "recusou acordo").
+- Agendamento de próximo contato (follow-up automático aparecendo pra quem é responsável).
+- Campo de observações livres por contato, visível pro time todo.
+
+### ⚙️ Automação
+- Notificações automáticas por e-mail/WhatsApp quando uma parcela vence ou fica em atraso.
+- Geração de boleto/PIX direto na negociação (integração com gateway de pagamento).
+- Score de propensão a pagar, baseado em histórico — um possível próximo passo com IA/ML.
+
+### 📊 Dashboard e métricas
+- Taxa de recuperação por período/categoria.
+- Aging de dívida (quanto está há 30/60/90+ dias em atraso) — métrica clássica de cobrança.
+- Ranking de desempenho por atendente/operador.
+
+### 🛡️ Compliance
+- Regras de horário permitido pra contato (regulamentação de cobrança no Brasil restringe horários).
+- LGPD: consentimento e direito ao esquecimento do devedor.
+- Opt-out de comunicação.
+
+### 🙋 Self-service pro devedor
+- Portal (ou até chatbot) onde o próprio devedor consulta a dívida e negocia sozinho, sem precisar de atendente.
+
+### 🖼️ Outros
+- Foto de perfil (com armazenamento adequado no back-end)
 
 ---
 
