@@ -84,7 +84,7 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                     {produto.nome}
                                 </td>
                                 <td className="py-3 px-6 text-base text-gray-500">
-                                    R$ {produto.valorDebito.toFixed(2)}
+                                    R$ {produto.valorDebito.toFixed(2).replace('.', ',')}
                                 </td>
                                 <td className="py-3 px-6 text-base">
                                     <span className={`text-xs font-medium px-2 py-1 rounded-full ${STATUS_STYLES[produto.status] ?? 'bg-gray-100 text-gray-700'
