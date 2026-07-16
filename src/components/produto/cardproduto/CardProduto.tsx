@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 interface CardProdutoProps {
     produtos: Produto[];
@@ -101,7 +102,7 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                                 to={`/editarproduto/${produto.id}`}
                                                 className="inline-flex items-center justify-center text-[#00b8cc] hover:underline p-1"
                                             >
-                                                Editar
+                                                <FiEdit2 size={18} />
                                             </Link>
                                         </td>
                                         <td className="py-3 pl-1 pr-6 text-center">
@@ -109,7 +110,7 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                                 to={`/deletarproduto/${produto.id}`}
                                                 className="inline-flex items-center justify-center text-red-500 hover:underline p-1"
                                             >
-                                                Deletar
+                                                <FiTrash2 size={18} />
                                             </Link>
                                         </td>
                                     </>
@@ -120,7 +121,7 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                 </tbody>
             </table>
         </div>
-    );
+    )
 }
 
 export default CardProduto;
