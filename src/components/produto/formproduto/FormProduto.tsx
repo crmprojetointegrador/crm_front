@@ -7,7 +7,7 @@ import type { Usuario } from "../../../models/Usuario";
 import { atualizar, buscar, cadastrar } from "../../../services/Service";
 import { ClipLoader } from "react-spinners";
 
-const STATUS_OPCOES = ["Pendente", "Pago", "Atrasado"];
+const STATUS_OPCOES = ["Pago", "Em acordo", "Em atraso", "Sem negociação"];
 
 function FormProduto() {
 
