@@ -4,13 +4,12 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
-import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
     const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const [produtos, setProdutos] = useState<Produto[]>([])
 
@@ -20,13 +19,13 @@ function ListarProdutos() {
     useEffect(() => {
         if (token === '') {
             alert('Você precisa estar logado!')
-            navigate('/login')
+            navigate('/')
         }
     }, [token])
 
     useEffect(() => {
         buscarProdutos()
-    }, [])
+    }, [produtos.length])
 
     async function buscarProdutos() {
         try {
@@ -46,39 +45,27 @@ function ListarProdutos() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-
-            {isLoading && (
-                <div className="flex justify-center py-16">
-                    <SyncLoader color="#a717eb" size={16} />
+            <>
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold">Produtos</h1>
+                    <Link
+                        to="/cadastrarproduto"
+                        className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
+                    >
+                        + Novo Produto
+                    </Link>
                 </div>
-            )}
 
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
-                <Link
-                    to="/cadastrarproduto"
-                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm"
-                >
-                    + Nova Cobrança
-                </Link>
-            </div>
+                {!isLoading && produtos.length === 0 && (
+                    <p className="text-gray-500 text-center py-8">Nenhum produto cadastrado ainda.</p>
+                )}
 
-            {(!isLoading && produtos.length === 0) && (
-                <p className="text-gray-500 text-center py-8">Nenhuma cobrança cadastrada ainda.</p>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {produtos.map((produto) => (
-                    <CardProduto
-                        key={produto.id}
-                        produto={produto}
-                    />
-                ))}
-            </div>
-
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
+                    <CardProduto produtos={produtos} loading={isLoading} />
+                </div>
+            </>
         </div>
-    );
-
+    )
 }
 
 export default ListarProdutos;
