@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import type { Usuario } from "../../../models/Usuario";
+import type { Produto } from "../../../models/Produto";
 
 interface CardUsuarioProps {
   usuarios: Usuario[];
+  produtos: Produto[];
   loading: boolean;
 }
+
+const STATUS_STYLES: Record<string, string> = {
+  "Pago": "bg-green-100 text-green-700",
+  "Em acordo": "bg-blue-100 text-blue-700",
+  "Em atraso": "bg-red-100 text-red-700",
+  "Sem negociação": "bg-gray-100 text-gray-700",
+};
 
 function formatarData(data: string) {
   if (!data) return "-";
@@ -18,7 +27,7 @@ function formatarCpf(cpf: string) {
   return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
 
-function CardUsuario({ usuarios, loading }: CardUsuarioProps) {
+function CardUsuario({ usuarios, produtos, loading }: CardUsuarioProps) {
   const linhasLoading = Array.from({ length: 5 });
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
 
@@ -54,6 +63,7 @@ function CardUsuario({ usuarios, loading }: CardUsuarioProps) {
           ) : (
             usuarios.map((usuario) => {
               const expandido = expandidoId === usuario.id;
+              const cobrancasDoUsuario = produtos.filter((p) => p.usuario?.id === usuario.id);
 
               return (
                 <>
@@ -76,7 +86,7 @@ function CardUsuario({ usuarios, loading }: CardUsuarioProps) {
                   {expandido && (
                     <tr key={`${usuario.id}-detalhe`} className="bg-[#faf5ff]/60 border-t border-gray-100">
                       <td colSpan={3} className="py-4 px-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm mb-4">
                           <div>
                             <span className="block text-gray-500 text-xs uppercase tracking-wide">CPF</span>
                             <span className="text-gray-800">{formatarCpf(usuario.cpf)}</span>
@@ -90,6 +100,50 @@ function CardUsuario({ usuarios, loading }: CardUsuarioProps) {
                             <span className="text-gray-800">{usuario.tipo}</span>
                           </div>
                         </div>
+
+                        <span className="block text-gray-500 text-xs uppercase tracking-wide mb-2">
+                          Cobranças cadastradas ({cobrancasDoUsuario.length})
+                        </span>
+
+                        {cobrancasDoUsuario.length === 0 ? (
+                          <p className="text-sm text-gray-400">Nenhuma cobrança atribuída a este usuário.</p>
+                        ) : (
+                          <div className="bg-white rounded-md border border-gray-200 overflow-hidden">
+                            <table className="w-full text-left text-sm">
+                              <thead>
+                                <tr className="bg-gray-50 border-b border-gray-200">
+                                  <th className="py-2 px-4 font-medium text-gray-500">Nome</th>
+                                  <th className="py-2 px-4 font-medium text-gray-500">Valor</th>
+                                  <th className="py-2 px-4 font-medium text-gray-500">Status</th>
+                                  <th className="py-2 px-4 font-medium text-gray-500">Categoria</th>
+                                  <th className="py-2 px-4 font-medium text-gray-500">Data</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {cobrancasDoUsuario.map((cobranca) => (
+                                  <tr key={cobranca.id} className="border-t border-gray-100">
+                                    <td className="py-2 px-4 text-gray-800">{cobranca.nome}</td>
+                                    <td className="py-2 px-4 text-gray-600">
+                                      R$ {cobranca.valorDebito.toFixed(2)}
+                                    </td>
+                                    <td className="py-2 px-4">
+                                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[cobranca.status] ?? "bg-gray-100 text-gray-700"
+                                        }`}>
+                                        {cobranca.status}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-600">
+                                      {cobranca.categoria?.nome || "Sem categoria"}
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-600">
+                                      {formatarData(cobranca.dataDebito)}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   )}

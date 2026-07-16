@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Usuario } from "../../../models/Usuario";
+import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import CardUsuario from "../cardusuario/CardUsuario";
 
@@ -11,6 +12,7 @@ function ListarUsuarios() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [busca, setBusca] = useState<string>("");
 
   const { usuario, handleLogout } = useContext(AuthContext);
@@ -26,6 +28,7 @@ function ListarUsuarios() {
   useEffect(() => {
     if (token !== '') {
       buscarUsuarios();
+      buscarProdutos();
     }
   }, [token]);
 
@@ -44,9 +47,17 @@ function ListarUsuarios() {
     }
   }
 
+  async function buscarProdutos() {
+    try {
+      await buscar('/produtos', setProdutos, {
+        headers: { Authorization: token }
+      });
+    } catch (error: any) {
+    }
+  }
+
   const termo = busca.trim().toLowerCase();
 
-  // Só usuários comuns (tipo "user"), nunca admins, nessa lista
   const usuariosVisiveis = usuarios
     .filter((u) => u.tipo?.trim().toLowerCase() === "user")
     .filter((u) =>
@@ -60,7 +71,7 @@ function ListarUsuarios() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold">Usuários</h1>
-          <p className="text-sm text-gray-500 mt-1">Clique em um nome para ver os dados completos.</p>
+          <p className="text-sm text-gray-500 mt-1">Clique em um nome para ver os dados e as cobranças dele.</p>
         </div>
 
         <input
@@ -79,7 +90,7 @@ function ListarUsuarios() {
       )}
 
       {(isLoading || usuariosVisiveis.length > 0) && (
-        <CardUsuario usuarios={usuariosVisiveis} loading={isLoading} />
+        <CardUsuario usuarios={usuariosVisiveis} produtos={produtos} loading={isLoading} />
       )}
     </div>
   );

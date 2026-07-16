@@ -2,22 +2,27 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
+import type { Categoria } from "../../../models/Categoria";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
-import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [produtos, setProdutos] = useState<Produto[]>([]);
-    const [statusFiltro, setStatusFiltro] = useState<string>("");
 
-    // Unindo estados e dados de autenticação de ambas as branches
+    const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+
+    const [statusFiltro, setStatusFiltro] = useState<string>("");
+    const [categoriaFiltro, setCategoriaFiltro] = useState<string>("");
+    const [cpfFiltro, setCpfFiltro] = useState<string>("");
+    const [userIdFiltro, setUserIdFiltro] = useState<string>("");
+
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
-    const isAdmin = usuario.tipo === "admin";
+    const isAdmin = usuario.tipo?.trim().toLowerCase() === "admin";
 
     useEffect(() => {
         if (token === '') {
@@ -29,18 +34,14 @@ function ListarProdutos() {
     useEffect(() => {
         if (token !== '') {
             buscarProdutos();
+            buscarCategorias();
         }
-    }, [token, statusFiltro]);
+    }, [token]);
 
     async function buscarProdutos() {
         try {
             setIsLoading(true);
-
-            const url = statusFiltro.trim() !== ""
-                ? `/produtos/status/${statusFiltro}`
-                : '/produtos';
-
-            await buscar(url, setProdutos, {
+            await buscar('/produtos', setProdutos, {
                 headers: { Authorization: token }
             });
         } catch (error: any) {
@@ -52,10 +53,33 @@ function ListarProdutos() {
         }
     }
 
-    // Regra de segurança mantida: Admin vê tudo. Usuário comum vê só as cobranças atribuídas a ele mesmo.
-    const produtosVisiveis = isAdmin
-        ? produtos
-        : produtos.filter((produto) => produto.usuario?.id === usuario.id);
+    async function buscarCategorias() {
+        try {
+            await buscar('/categorias', setCategorias, {
+                headers: { Authorization: token }
+            });
+        } catch (error: any) {
+            // Falha silenciosa se houver erro ao carregar categorias
+        }
+    }
+
+    const produtosFiltrados = produtos.filter((produto) => {
+        // Se não for admin, só exibe as cobranças do próprio usuário
+        if (!isAdmin && produto.usuario?.id !== usuario.id) {
+            return false;
+        }
+
+        const matchStatus = !statusFiltro || produto.status === statusFiltro;
+        const matchCategoria = !categoriaFiltro || produto.categoria?.id === Number(categoriaFiltro);
+
+        const matchCpf = !isAdmin || !cpfFiltro ||
+            (produto.usuario?.cpf && produto.usuario.cpf.replace(/\D/g, '').includes(cpfFiltro.replace(/\D/g, '')));
+
+        const matchUserId = !isAdmin || !userIdFiltro ||
+            produto.usuario?.id === Number(userIdFiltro);
+
+        return matchStatus && matchCategoria && matchCpf && matchUserId;
+    });
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -63,11 +87,11 @@ function ListarProdutos() {
                 <div>
                     <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
 
-                    <div className="mt-2">
+                    <div className="flex flex-wrap gap-2 mt-3">
                         <select
                             value={statusFiltro}
                             onChange={(e) => setStatusFiltro(e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-64 bg-white"
+                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] min-w-[150px] bg-white"
                         >
                             <option value="">Todos os Status</option>
                             <option value="Pago">Pago</option>
@@ -75,44 +99,62 @@ function ListarProdutos() {
                             <option value="Em atraso">Em atraso</option>
                             <option value="Sem negociação">Sem negociação</option>
                         </select>
+
+                        <select
+                            value={categoriaFiltro}
+                            onChange={(e) => setCategoriaFiltro(e.target.value)}
+                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] min-w-[150px] bg-white"
+                        >
+                            <option value="">Todas as Categorias</option>
+                            {categorias.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.nome}
+                                </option>
+                            ))}
+                        </select>
+
+                        {isAdmin && (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por CPF..."
+                                    value={cpfFiltro}
+                                    onChange={(e) => setCpfFiltro(e.target.value)}
+                                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-44"
+                                />
+
+                                <input
+                                    type="number"
+                                    placeholder="Buscar por ID Usuário..."
+                                    value={userIdFiltro}
+                                    onChange={(e) => setUserIdFiltro(e.target.value)}
+                                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-44"
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
 
                 <Link
                     to="/cadastrarproduto"
-                    // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm self-stretch md:self-auto text-center"
                 >
                     + Nova Cobrança
                 </Link>
             </div>
 
-            {/* Spinner de Loading */}
-            {isLoading && (
-                <div className="flex justify-center py-16">
-                    <SyncLoader color="#a717eb" size={16} />
-                </div>
-            )}
-
-            {/* Tratamento para lista vazia (Aplica o filtro de visibilidade do usuário comum/admin) */}
-            {(!isLoading && produtosVisiveis.length === 0) && (
+            {(!isLoading && produtosFiltrados.length === 0) && (
                 <p className="text-gray-500 text-center py-8">
-                    {statusFiltro
-                        ? "Nenhuma cobrança encontrada com esse status."
-                        : "Nenhuma cobrança cadastrada ainda."
-                    }
+                    Nenhuma cobrança encontrada com os filtros selecionados.
                 </p>
             )}
 
-            {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
-            {!isLoading && produtosVisiveis.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {produtosVisiveis.map((produto) => (
-                        <CardProduto
-                            key={produto.id}
-                            produto={produto}
-                        />
-                    ))}
+            {(isLoading || produtosFiltrados.length > 0) && (
+                <div className="grid grid-cols-1 gap-4">
+                    <CardProduto
+                        produtos={produtosFiltrados}
+                        loading={isLoading}
+                    />
                 </div>
             )}
         </div>
