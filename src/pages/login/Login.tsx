@@ -3,12 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type { UsuarioLogin } from "../../models/UsuarioLogin";
 import { AuthContext } from "../../contexts/AuthContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Login() {
 
     const navigate = useNavigate();
 
     const { usuario, handleLogin, isLoading } = useContext(AuthContext)
+
+    const [senhaVisivel, setSenhaVisivel] = useState(false);
 
     const [usuarioLogin, setUsuarioLogin] = useState<UsuarioLogin>(
         {} as UsuarioLogin
@@ -53,18 +56,27 @@ function Login() {
                     />
                 </div>
 
-                <div className="flex flex-col w-full gap-1">
+                <div className="flex flex-col w-full gap-1 relative">
                     <label htmlFor="senha" className="text-sm font-medium text-gray-700">Senha</label>
-                    <input
-                        type="password"
-                        id="senha"
-                        name="senha"
-                        placeholder="Senha"
-                        autoComplete="current-password"
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        value={usuarioLogin.senha}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-                    />
+                    <div className="relative">
+                        <input
+                            type={senhaVisivel ? "text" : "password"}
+                            id="senha"
+                            name="senha"
+                            placeholder="Senha"
+                            autoComplete="current-password"
+                            className="border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+                            value={usuarioLogin.senha}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setSenhaVisivel(!senhaVisivel)}
+                            className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            {senhaVisivel ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                        </button>
+                    </div>
                 </div>
 
                 <button
