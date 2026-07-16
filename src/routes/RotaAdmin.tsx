@@ -13,7 +13,7 @@ function RotaAdmin({ children }: RotaAdminProps) {
     return <Navigate to="/login" replace />;
   }
 
-  if (usuario.tipo !== "admin") {
+  if (usuario.tipo?.trim().toLowerCase() !== "admin") {
     return <Navigate to="/produtos" replace />;
   }
 

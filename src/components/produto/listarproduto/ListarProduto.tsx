@@ -5,12 +5,12 @@ import type { Produto } from "../../../models/Produto";
 import type { Categoria } from "../../../models/Categoria";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
-import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
     const navigate = useNavigate();
 
+<<<<<<< HEAD
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -21,6 +21,18 @@ function ListarProdutos() {
     const [cpfFiltro, setCpfFiltro] = useState<string>("");
     const [userIdFiltro, setUserIdFiltro] = useState<string>("");
 
+=======
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+
+    const [statusFiltro, setStatusFiltro] = useState<string>("");
+    const [categoriaFiltro, setCategoriaFiltro] = useState<string>("");
+    const [cpfFiltro, setCpfFiltro] = useState<string>("");
+    const [userIdFiltro, setUserIdFiltro] = useState<string>("");
+
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
     const isAdmin = usuario.tipo?.trim().toLowerCase() === "admin";
@@ -70,6 +82,7 @@ function ListarProdutos() {
             return false;
         }
 
+<<<<<<< HEAD
         const matchStatus = !statusFiltro || produto.status === statusFiltro;
         const matchCategoria = !categoriaFiltro || produto.categoria?.id === Number(categoriaFiltro);
 
@@ -77,6 +90,20 @@ function ListarProdutos() {
             (produto.usuario?.cpf && produto.usuario.cpf.replace(/\D/g, '').includes(cpfFiltro.replace(/\D/g, '')));
 
         const matchUserId = !isAdmin || !userIdFiltro ||
+=======
+        // Filtro de Status
+        const matchStatus = !statusFiltro || produto.status === statusFiltro;
+
+        // Filtro de Categoria
+        const matchCategoria = !categoriaFiltro || produto.categoria?.id === Number(categoriaFiltro);
+
+        // Filtro de CPF (apenas para admin)
+        const matchCpf = !isAdmin || !cpfFiltro || 
+            (produto.usuario?.cpf && produto.usuario.cpf.replace(/\D/g, '').includes(cpfFiltro.replace(/\D/g, '')));
+
+        // Filtro de ID do Usuário (apenas para admin)
+        const matchUserId = !isAdmin || !userIdFiltro || 
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
             produto.usuario?.id === Number(userIdFiltro);
 
         return matchStatus && matchCategoria && matchCpf && matchUserId;
@@ -89,6 +116,10 @@ function ListarProdutos() {
                     <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
 
                     <div className="flex flex-wrap gap-2 mt-3">
+<<<<<<< HEAD
+=======
+                        {/* Filtro de Status */}
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
                         <select
                             value={statusFiltro}
                             onChange={(e) => setStatusFiltro(e.target.value)}
@@ -101,6 +132,10 @@ function ListarProdutos() {
                             <option value="Sem negociação">Sem negociação</option>
                         </select>
 
+<<<<<<< HEAD
+=======
+                        {/* Filtro de Categoria */}
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
                         <select
                             value={categoriaFiltro}
                             onChange={(e) => setCategoriaFiltro(e.target.value)}
@@ -114,6 +149,10 @@ function ListarProdutos() {
                             ))}
                         </select>
 
+<<<<<<< HEAD
+=======
+                        {/* Filtros extras visíveis apenas para ADMIN */}
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
                         {isAdmin && (
                             <>
                                 <input
@@ -144,6 +183,7 @@ function ListarProdutos() {
                 </Link>
             </div>
 
+<<<<<<< HEAD
             {(!isLoading && produtosFiltrados.length === 0) && (
                 <p className="text-gray-500 text-center py-8">
                     Nenhuma cobrança encontrada com os filtros selecionados.
@@ -158,8 +198,29 @@ function ListarProdutos() {
                     />
                 </div>
             )}
+=======
+            {
+                (!isLoading && produtosFiltrados.length === 0) && (
+                    <p className="text-gray-500 text-center py-8">
+                        Nenhuma cobrança encontrada com os filtros selecionados.
+                    </p>
+                )
+            }
+
+            {
+                (isLoading || produtosFiltrados.length > 0) && (
+                    <div className="grid grid-cols-1 gap-4">
+                        <CardProduto
+                            produtos={produtosFiltrados}
+                            loading={isLoading}
+                        />
+                    </div>
+                )
+            }
+>>>>>>> d92b11c (feat: substitui o campo de entrada do filtro de status por um seletor do tipo dropdown com opções de status predefinidas)
         </div>
     );
+
 }
 
 export default ListarProdutos;
