@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 function Home() {
+  const { usuario } = useContext(AuthContext);
   return (
+    
     <div
       className="relative flex justify-center min-h-[calc(100vh-64px)]"
       style={{
@@ -13,7 +17,7 @@ function Home() {
             CRM de Cobrança
           </span>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Olá usuário,<br />
+            Olá {usuario?.nome || "usuário"},<br />
             <span className="bg-gradient-to-r from-white to-[#00e8ff] bg-clip-text text-transparent">
               bem-vindo ao
             </span><br />
