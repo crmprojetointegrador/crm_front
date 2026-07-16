@@ -48,7 +48,7 @@ function Navbar() {
 
                     <Link to='/categorias' className='hover:underline'>Categorias</Link>
 
-                    <Link to='/produtos' className='hover:underline'>Produto</Link>
+                    <Link to='/produtos' className='hover:underline'>Cobranças</Link>
 
                     {isAdmin && (
                         <Link to='/usuarios' className='hover:underline'>Usuários</Link>
