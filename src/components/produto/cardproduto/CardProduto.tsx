@@ -1,8 +1,8 @@
+import { Link } from 'react-router-dom'
+import type { Produto } from '../../../models/Produto'
+import { FiEdit2, FiTrash2 } from 'react-icons/fi'
 import { useContext } from "react";
-import { Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
-import type { Produto } from "../../../models/Produto";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 interface CardProdutoProps {
     produtos: Produto[];
@@ -124,4 +124,4 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
     )
 }
 
-export default CardProduto;
+export default CardProduto
