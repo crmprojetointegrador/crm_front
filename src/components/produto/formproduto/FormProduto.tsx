@@ -16,7 +16,7 @@ function FormProduto() {
     const emEdicao = Boolean(id);
 
     const [produto, setProduto] = useState<Produto>({
-        id: 0,
+        id: null,
         nome: '',
         valorDebito: 0,
         dataDebito: '',
@@ -28,6 +28,7 @@ function FormProduto() {
     const [categorias, setCategorias] = useState<Categoria[]>([])
     const [categoriaId, setCategoriaId] = useState<string>('')
 
+    // Busca do usuário responsável (só usado quando quem está logado é admin)
     const [usuarios, setUsuarios] = useState<Usuario[]>([])
     const [buscaUsuario, setBuscaUsuario] = useState<string>('')
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null)
@@ -166,14 +167,13 @@ function FormProduto() {
 
         const categoriaSelecionada = categorias.find((c) => c.id === Number(categoriaId)) ?? null
 
-        // Admin escolhe o dono via busca. Usuário comum: sempre atribuído a ele mesmo.
         const usuarioResponsavel: Usuario | null = isAdmin
-            ? usuarioSelecionado
+            ? (usuarioSelecionado ? ({ id: usuarioSelecionado.id } as Usuario) : null)
             : ({ id: usuario.id } as Usuario)
 
         const payload: Produto = {
             ...produto,
-            id: emEdicao ? Number(id) : 0,
+            id: emEdicao ? Number(id) : null,
             valorDebito: Number(produto.valorDebito),
             categoria: categoriaSelecionada,
             usuario: usuarioResponsavel
@@ -355,10 +355,6 @@ function FormProduto() {
                                 ))}
                             </ul>
                         )}
-
-                        {sugestoesAbertas && !usuarioSelecionado && termo.length > 0 && sugestoes.length === 0 && (
-                            <span className="text-xs text-gray-500">Nenhum usuário encontrado.</span>
-                        )}
                     </div>
                 )}
 
@@ -372,7 +368,7 @@ function FormProduto() {
                     </button>
                     <button
                         type="submit"
-                        className="flex-1 bg-gradient-to-rfrom-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
+                        className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
                         disabled={isLoading}
                     >
                         {isLoading ?
