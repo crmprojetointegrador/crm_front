@@ -28,12 +28,12 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                 <thead>
                     <tr className="bg-[#faf5ff] border-b-2 border-[#a717eb]">
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Nome</th>
-                        <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Parcela</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Valor</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Status</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Categoria</th>
                         {isAdmin && (
                             <>
+                                <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Atribuído a</th>
                                 <th className="py-3 pl-2 pr-1 font-semibold text-sm tracking-wide uppercase text-center w-10"></th>
                                 <th className="py-3 pl-1 pr-6 font-semibold text-sm tracking-wide uppercase text-center w-10"></th>
                             </>
@@ -48,9 +48,6 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                     <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
                                 </td>
                                 <td className="py-3 px-6">
-                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
-                                </td>
-                                <td className="py-3 px-6">
                                     <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2" />
                                 </td>
                                 <td className="py-3 px-6">
@@ -61,6 +58,9 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 </td>
                                 {isAdmin && (
                                     <>
+                                        <td className="py-3 px-6">
+                                            <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
+                                        </td>
                                         <td className="py-3 pl-2 pr-1 text-center">
                                             <div className="h-5 w-5 bg-gray-200 rounded animate-pulse mx-auto" />
                                         </td>
@@ -77,14 +77,11 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 key={produto.id}
                                 className="border-t border-gray-100 hover:bg-[#faf5ff] transition-colors"
                             >
-                                <td className="py-3 px-6 text-base text-gray-800 font-medium">  {/* ← nome do usuario que deve */}
-                                    {produto.usuario?.nome || 'Usuário não atribuído'}
-                                </td>
                                 <td className="py-3 px-6 text-base font-medium text-gray-800">
                                     {produto.nome}
                                 </td>
                                 <td className="py-3 px-6 text-base text-gray-500">
-                                    R$ {produto.valorDebito.toFixed(2).replace('.', ',')}
+                                    R$ {produto.valorDebito.toFixed(2)}
                                 </td>
                                 <td className="py-3 px-6 text-base">
                                     <span className={`text-xs font-medium px-2 py-1 rounded-full ${STATUS_STYLES[produto.status] ?? 'bg-gray-100 text-gray-700'
@@ -97,6 +94,9 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 </td>
                                 {isAdmin && (
                                     <>
+                                        <td className="py-3 px-6 text-base text-gray-500">
+                                            {produto.usuario?.nome || '-'}
+                                        </td>
                                         <td className="py-3 pl-2 pr-1 text-center">
                                             <Link
                                                 to={`/editarproduto/${produto.id}`}

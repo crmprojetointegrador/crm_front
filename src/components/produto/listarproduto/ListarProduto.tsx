@@ -69,17 +69,12 @@ function ListarProdutos() {
             return false;
         }
 
-        // Filtro de Status
         const matchStatus = !statusFiltro || produto.status === statusFiltro;
-
-        // Filtro de Categoria
         const matchCategoria = !categoriaFiltro || produto.categoria?.id === Number(categoriaFiltro);
 
-        // Filtro de CPF (apenas para admin)
         const matchCpf = !isAdmin || !cpfFiltro ||
             (produto.usuario?.cpf && produto.usuario.cpf.replace(/\D/g, '').includes(cpfFiltro.replace(/\D/g, '')));
 
-        // Filtro de ID do Usuário (apenas para admin)
         const matchUserId = !isAdmin || !userIdFiltro ||
             produto.usuario?.id === Number(userIdFiltro);
 
@@ -93,7 +88,6 @@ function ListarProdutos() {
                     <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
 
                     <div className="flex flex-wrap gap-2 mt-3">
-                        {/* Filtro de Status */}
                         <select
                             value={statusFiltro}
                             onChange={(e) => setStatusFiltro(e.target.value)}
@@ -106,7 +100,6 @@ function ListarProdutos() {
                             <option value="Sem negociação">Sem negociação</option>
                         </select>
 
-                        {/* Filtro de Categoria */}
                         <select
                             value={categoriaFiltro}
                             onChange={(e) => setCategoriaFiltro(e.target.value)}
@@ -120,7 +113,6 @@ function ListarProdutos() {
                             ))}
                         </select>
 
-                        {/* Filtros extras visíveis apenas para ADMIN */}
                         {isAdmin && (
                             <>
                                 <input
