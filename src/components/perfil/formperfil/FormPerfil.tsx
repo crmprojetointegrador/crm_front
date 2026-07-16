@@ -201,7 +201,7 @@ function FormPerfil() {
           </button>
           <button
             type="submit"
-            className="flex-1 bg-gradient-to-rfrom-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
+            className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
             disabled={isLoading}
           >
             {isLoading ?
