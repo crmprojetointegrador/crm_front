@@ -4,6 +4,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
+import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
