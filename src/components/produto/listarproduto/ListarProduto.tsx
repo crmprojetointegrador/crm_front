@@ -76,11 +76,11 @@ function ListarProdutos() {
         const matchCategoria = !categoriaFiltro || produto.categoria?.id === Number(categoriaFiltro);
 
         // Filtro de CPF (apenas para admin)
-        const matchCpf = !isAdmin || !cpfFiltro || 
+        const matchCpf = !isAdmin || !cpfFiltro ||
             (produto.usuario?.cpf && produto.usuario.cpf.replace(/\D/g, '').includes(cpfFiltro.replace(/\D/g, '')));
 
         // Filtro de ID do Usuário (apenas para admin)
-        const matchUserId = !isAdmin || !userIdFiltro || 
+        const matchUserId = !isAdmin || !userIdFiltro ||
             produto.usuario?.id === Number(userIdFiltro);
 
         return matchStatus && matchCategoria && matchCpf && matchUserId;
@@ -151,24 +151,20 @@ function ListarProdutos() {
                 </Link>
             </div>
 
-            {
-                (!isLoading && produtosFiltrados.length === 0) && (
-                    <p className="text-gray-500 text-center py-8">
-                        Nenhuma cobrança encontrada com os filtros selecionados.
-                    </p>
-                )
-            }
+            {(!isLoading && produtosFiltrados.length === 0) && (
+                <p className="text-gray-500 text-center py-8">
+                    Nenhuma cobrança encontrada com os filtros selecionados.
+                </p>
+            )}
 
-            {
-                (isLoading || produtosFiltrados.length > 0) && (
-                    <div className="grid grid-cols-1 gap-4">
-                        <CardProduto
-                            produtos={produtosFiltrados}
-                            loading={isLoading}
-                        />
-                    </div>
-                )
-            }
+            {(isLoading || produtosFiltrados.length > 0) && (
+                <div className="grid grid-cols-1 gap-4">
+                    <CardProduto
+                        produtos={produtosFiltrados}
+                        loading={isLoading}
+                    />
+                </div>
+            )}
         </div>
     );
 

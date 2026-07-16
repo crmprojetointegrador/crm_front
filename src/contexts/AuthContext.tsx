@@ -4,6 +4,33 @@ import type { UsuarioLogin } from "../models/UsuarioLogin"
 import { login, buscar } from "../services/Service"
 import { ToastAlerta } from "../utils/ToastAlerta"
 
+const CHAVE_STORAGE = "inteliCob_usuario"
+
+const USUARIO_VAZIO: UsuarioLogin = {
+    id: 0,
+    nome: "",
+    cpf: "",
+    senha: "",
+    token: "",
+    tipo: ""
+}
+
+function carregarUsuarioSalvo(): UsuarioLogin {
+    try {
+        const salvo = localStorage.getItem(CHAVE_STORAGE)
+        if (!salvo) return USUARIO_VAZIO
+
+        const usuario = JSON.parse(salvo) as UsuarioLogin
+
+        // proteção básica: se o objeto salvo estiver incompleto/corrompido, ignora
+        if (!usuario.token) return USUARIO_VAZIO
+
+        return usuario
+    } catch {
+        return USUARIO_VAZIO
+    }
+}
+
 interface AuthContextProps {
     usuario: UsuarioLogin
     handleLogout(): void
@@ -19,16 +46,14 @@ export const AuthContext = createContext({} as AuthContextProps)
 
 export function AuthProvider({ children }: AuthProviderProps) {
 
-    const [usuario, setUsuario] = useState<UsuarioLogin>({
-        id: 0,
-        nome: "",
-        cpf: "",
-        senha: "",
-        token: "",
-        tipo: ""
-    })
+    const [usuario, setUsuario] = useState<UsuarioLogin>(carregarUsuarioSalvo)
 
     const [isLoading, setIsLoading] = useState(false)
+
+    function salvarUsuario(dados: UsuarioLogin) {
+        setUsuario(dados)
+        localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados))
+    }
 
     async function handleLogin(usuarioLogin: UsuarioLogin) {
         setIsLoading(true)
@@ -40,16 +65,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 dadosLogin = dados
             })
 
-
             try {
                 await buscar(`/usuarios/${dadosLogin.id}`, (dadosUsuario: any) => {
-                    setUsuario({ ...dadosLogin, tipo: dadosUsuario.tipo ?? "user" })
+                    salvarUsuario({ ...dadosLogin, tipo: dadosUsuario.tipo ?? "user" })
                 }, {
                     headers: { Authorization: dadosLogin.token }
                 })
             } catch {
-
-                setUsuario({ ...dadosLogin, tipo: "user" })
+                salvarUsuario({ ...dadosLogin, tipo: "user" })
             }
 
             ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso")
@@ -61,14 +84,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     function handleLogout() {
-        setUsuario({
-            id: 0,
-            nome: "",
-            cpf: "",
-            senha: "",
-            token: "",
-            tipo: ""
-        })
+        setUsuario(USUARIO_VAZIO)
+        localStorage.removeItem(CHAVE_STORAGE)
     }
 
     return (
