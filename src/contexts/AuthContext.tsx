@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useState } from "react"
 
 import type { UsuarioLogin } from "../models/UsuarioLogin"
-import { login } from "../services/Service"
+import { login, buscar } from "../services/Service"
 import { ToastAlerta } from "../utils/ToastAlerta"
 
 interface AuthContextProps {
@@ -24,7 +24,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         nome: "",
         cpf: "",
         senha: "",
-        token: ""
+        token: "",
+        tipo: ""
     })
 
     const [isLoading, setIsLoading] = useState(false)
@@ -33,11 +34,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(true)
 
         try {
-            await login(`/usuarios/logar`, usuarioLogin, setUsuario)
+            let dadosLogin = {} as UsuarioLogin
+
+            await login(`/usuarios/logar`, usuarioLogin, (dados: UsuarioLogin) => {
+                dadosLogin = dados
+            })
+
+
+            try {
+                await buscar(`/usuarios/${dadosLogin.id}`, (dadosUsuario: any) => {
+                    setUsuario({ ...dadosLogin, tipo: dadosUsuario.tipo ?? "user" })
+                }, {
+                    headers: { Authorization: dadosLogin.token }
+                })
+            } catch {
+
+                setUsuario({ ...dadosLogin, tipo: "user" })
+            }
+
             ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso")
         } catch (error) {
             ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro")
         }
+
         setIsLoading(false)
     }
 
@@ -47,7 +66,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
             nome: "",
             cpf: "",
             senha: "",
-            token: ""
+            token: "",
+            tipo: ""
         })
     }
 

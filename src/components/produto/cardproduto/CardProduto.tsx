@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 
 interface CardProdutoProps {
@@ -12,6 +14,9 @@ const statusStyles: Record<string, string> = {
 };
 
 function CardProduto({ produto }: CardProdutoProps) {
+
+    const { usuario } = useContext(AuthContext);
+    const isAdmin = usuario.tipo === "admin";
 
     const badgeClass = statusStyles[produto.status] ?? "bg-gray-100 text-gray-700";
 
@@ -39,17 +44,19 @@ function CardProduto({ produto }: CardProdutoProps) {
                 </p>
             )}
 
-            <div className="flex gap-4 mt-2 pt-2 border-t border-gray-100">
+            {isAdmin && (
+                <div className="flex gap-4 mt-2 pt-2 border-t border-gray-100">
 
-                <Link to={`/editarproduto/${produto.id}`} className="text-purple-700 hover:underline text-sm font-medium">
-                    Editar
-                </Link>
+                    <Link to={`/editarproduto/${produto.id}`} className="text-purple-700 hover:underline text-sm font-medium">
+                        Editar
+                    </Link>
 
-                <Link to={`/deletarproduto/${produto.id}`} className="text-red-600 hover:underline text-sm font-medium">
-                    Deletar
-                </Link>
+                    <Link to={`/deletarproduto/${produto.id}`} className="text-red-600 hover:underline text-sm font-medium">
+                        Deletar
+                    </Link>
 
-            </div>
+                </div>
+            )}
 
         </div>
     );
