@@ -1,6 +1,10 @@
+
 import { Link } from 'react-router-dom'
 import type { Produto } from '../../../models/Produto'
 import { FiEdit2, FiTrash2 } from 'react-icons/fi'
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
+
 
 interface CardProdutoProps {
     produtos: Produto[]

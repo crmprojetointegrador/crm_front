@@ -9,63 +9,108 @@ function ListarProdutos() {
 
     const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [statusFiltro, setStatusFiltro] = useState<string>("");
 
-    const [produtos, setProdutos] = useState<Produto[]>([])
-
-    const { usuario, handleLogout } = useContext(AuthContext)
-    const token = usuario.token
+    // Unindo estados e dados de autenticação de ambas as branches
+    const { usuario, handleLogout } = useContext(AuthContext);
+    const token = usuario.token;
+    const isAdmin = usuario.tipo === "admin";
 
     useEffect(() => {
         if (token === '') {
             alert('Você precisa estar logado!')
             navigate('/')
         }
-    }, [token])
+    }, [token]);
 
     useEffect(() => {
-        buscarProdutos()
-    }, [produtos.length])
+        if (token !== '') {
+            buscarProdutos();
+        }
+    }, [token, statusFiltro]);
 
     async function buscarProdutos() {
         try {
-            setIsLoading(true)
+            setIsLoading(true);
 
-            await buscar('/produtos', setProdutos, {
+            const url = statusFiltro.trim() !== ""
+                ? `/produtos/status/${statusFiltro}`
+                : '/produtos';
+
+            await buscar(url, setProdutos, {
                 headers: { Authorization: token }
-            })
+            });
         } catch (error: any) {
             if (error.toString().includes('401')) {
-                handleLogout()
+                handleLogout();
             }
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
+    // Regra de segurança mantida: Admin vê tudo. Usuário comum vê só as cobranças atribuídas a ele mesmo.
+    const produtosVisiveis = isAdmin
+        ? produtos
+        : produtos.filter((produto) => produto.usuario?.id === usuario.id);
+
     return (
         <div className="container mx-auto px-4 py-8">
-            <>
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">Produtos</h1>
-                    <Link
-                        to="/cadastrarproduto"
-                        className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
-                    >
-                        + Novo Produto
-                    </Link>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
+
+                    <div className="mt-2">
+                        <select
+                            value={statusFiltro}
+                            onChange={(e) => setStatusFiltro(e.target.value)}
+                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-64 bg-white"
+                        >
+                            <option value="">Todos os Status</option>
+                            <option value="Pago">Pago</option>
+                            <option value="Em acordo">Em acordo</option>
+                            <option value="Em atraso">Em atraso</option>
+                            <option value="Sem negociação">Sem negociação</option>
+                        </select>
+                    </div>
                 </div>
 
-                {!isLoading && produtos.length === 0 && (
-                    <p className="text-gray-500 text-center py-8">Nenhum produto cadastrado ainda.</p>
-                )}
+                <Link
+                    to="/cadastrarproduto"
+                    // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
+                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
+                >
+                    + Nova Cobrança
+                </Link>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
+            {/* Spinner de Loading */}
+            {isLoading && (
+                <div className="flex justify-center py-16">
+                    <SyncLoader color="#a717eb" size={16} />
+                </div>
+            )}
+
+            {/* Tratamento para lista vazia (Aplica o filtro de visibilidade do usuário comum/admin) */}
+            {(!isLoading && produtosVisiveis.length === 0) && (
+                <p className="text-gray-500 text-center py-8">
+                    {statusFiltro
+                        ? "Nenhuma cobrança encontrada com esse status."
+                        : "Nenhuma cobrança cadastrada ainda."
+                    }
+                </p>
+            )}
+
+            {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
+            {!isLoading && produtosVisiveis.length > 0 && (
+                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
                     <CardProduto produtos={produtos} loading={isLoading} />
                 </div>
-            </>
+            )}
         </div>
-    )
+    );
 }
 
 export default ListarProdutos;

@@ -4,4 +4,5 @@ export interface UsuarioLogin {
     cpf: string;
     senha: string;
     token: string;
+    tipo: string;
 }
