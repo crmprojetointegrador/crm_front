@@ -10,6 +10,7 @@ function Navbar() {
 
     const [menuAberto, setMenuAberto] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const token = usuario.token
 
     useEffect(() => {
         function fecharAoClicarFora(e: MouseEvent) {
@@ -70,17 +71,21 @@ function Navbar() {
                 </Link>
 
                 <div className='flex gap-6 items-center'>
-                    <Link to='/categorias' className='hover:underline'>Categorias</Link>
 
-                    <Link to='/produtos' className='hover:underline'>Cobranças</Link>
+                    {usuario.token !== "" ? (
+                      <>
+                        <Link to='/categorias' className='hover:underline text-white'>Categorias</Link>
+                        <Link to='/produtos' className='hover:underline text-white'>Cobranças</Link>
+                      </>
+                    ) : null}
 
-                    <Link to='/about' className='hover:underline'>Sobre nós</Link>
+                    <Link to='/about' className='hover:underline text-white'>Sobre nós</Link>
 
                     {usuario.token !== "" ? (
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => setMenuAberto((aberto) => !aberto)}
-                                className="text-sm hover:underline flex items-center gap-1 cursor-pointer"
+                                className="text-sm hover:underline flex items-center gap-1 cursor-pointer text-white"
                             >
                                 Olá, {usuario.nome}
                                 <span className={`text-xs transition-transform ${menuAberto ? "rotate-180" : ""}`}>▾</span>
@@ -111,7 +116,7 @@ function Navbar() {
                             )}
                         </div>
                     ) : (
-                        <Link to='/login' className='hover:underline'>Login</Link>
+                        <Link to='/login' className='hover:underline text-white'>Login</Link>
                     )}
                 </div>
             </div>
