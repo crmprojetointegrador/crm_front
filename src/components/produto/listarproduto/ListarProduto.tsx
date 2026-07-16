@@ -14,10 +14,9 @@ function ListarProdutos() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [statusFiltro, setStatusFiltro] = useState<string>("");
 
-    // Unindo estados e dados de autenticação de ambas as branches
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
-    const isAdmin = usuario.tipo === "admin";
+    const isAdmin = usuario.tipo?.toLowerCase() === "admin";
 
     useEffect(() => {
         if (token === '') {
@@ -80,21 +79,18 @@ function ListarProdutos() {
 
                 <Link
                     to="/cadastrarproduto"
-                    // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
                 >
                     + Nova Cobrança
                 </Link>
             </div>
 
-            {/* Spinner de Loading */}
             {isLoading && (
                 <div className="flex justify-center py-16">
                     <SyncLoader color="#a717eb" size={16} />
                 </div>
             )}
 
-            {/* Tratamento para lista vazia (Aplica o filtro de visibilidade do usuário comum/admin) */}
             {(!isLoading && produtosVisiveis.length === 0) && (
                 <p className="text-gray-500 text-center py-8">
                     {statusFiltro
@@ -104,10 +100,9 @@ function ListarProdutos() {
                 </p>
             )}
 
-            {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
             {!isLoading && produtosVisiveis.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
-                    <CardProduto produtos={produtos} loading={isLoading} />
+                    <CardProduto produtos={produtosVisiveis} loading={isLoading} />
                 </div>
             )}
         </div>
