@@ -5,6 +5,7 @@ import type { Produto } from "../../../models/Produto";
 import type { Categoria } from "../../../models/Categoria";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
+import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
