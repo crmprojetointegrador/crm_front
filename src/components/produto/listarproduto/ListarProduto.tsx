@@ -81,7 +81,7 @@ function ListarProdutos() {
                 <Link
                     to="/cadastrarproduto"
                     // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
-                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
+                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
                 >
                     + Nova Cobrança
                 </Link>
@@ -106,7 +106,7 @@ function ListarProdutos() {
 
             {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
             {!isLoading && produtosVisiveis.length > 0 && (
-                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
                     <CardProduto produtos={produtos} loading={isLoading} />
                 </div>
             )}
