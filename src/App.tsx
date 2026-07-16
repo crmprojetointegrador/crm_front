@@ -14,6 +14,9 @@ import FormProduto from "./components/produto/formproduto/FormProduto";
 import DeletarProduto from "./components/produto/deletarproduto/DeletarProduto";
 
 import RotaProtegida from "./routes/RotaProtegida";
+import ListaCategoria from "./components/categoria/listarcategoria/ListaCategoria";
+import FormCategoria from "./components/categoria/formcategoria/FormCategoria";
+import DeletarCategoria from "./components/categoria/deletarcategoria/DeletarCategoria";
 
 function App() {
   return (
@@ -86,6 +89,47 @@ function App() {
                 </RotaProtegida>
               }
             />
+
+            {/* Lista de categorias (autenticado) */}
+            <Route
+              path="/categorias"
+              element={
+                <RotaProtegida>
+                  <ListaCategoria />
+                </RotaProtegida>
+              }
+            />
+
+            {/* Form de categorias (autenticado) */}
+            <Route
+              path="/cadastrarcategoria"
+              element={
+                <RotaProtegida>
+                  <FormCategoria />
+                </RotaProtegida>
+              }
+            />
+
+            {/* Deletar categoria (autenticado) */}
+            <Route
+              path="/deletarcategoria/:id"
+              element={
+                <RotaProtegida>
+                  <DeletarCategoria />
+                </RotaProtegida>
+              }
+            />
+
+            {/* Deletar categoria (autenticado) */}
+            <Route
+              path="/editarcategoria/:id"
+              element={
+                <RotaProtegida>
+                  <FormCategoria />
+                </RotaProtegida>
+              }
+            />
+
 
           </Routes>
         </div>
