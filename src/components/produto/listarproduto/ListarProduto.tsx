@@ -4,7 +4,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import CardProduto from "../cardproduto/CardProduto";
-import { SyncLoader } from "react-spinners";
 
 function ListarProdutos() {
 
@@ -21,8 +20,8 @@ function ListarProdutos() {
 
     useEffect(() => {
         if (token === '') {
-            alert('Você precisa estar logado!');
-            navigate('/login');
+            alert('Você precisa estar logado!')
+            navigate('/')
         }
     }, [token]);
 
@@ -81,7 +80,7 @@ function ListarProdutos() {
                 <Link
                     to="/cadastrarproduto"
                     // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
-                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm self-stretch md:self-auto text-center"
+                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
                 >
                     + Nova Cobrança
                 </Link>
@@ -106,13 +105,8 @@ function ListarProdutos() {
 
             {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
             {!isLoading && produtosVisiveis.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {produtosVisiveis.map((produto) => (
-                        <CardProduto
-                            key={produto.id}
-                            produto={produto}
-                        />
-                    ))}
+                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
+                    <CardProduto produtos={produtos} loading={isLoading} />
                 </div>
             )}
         </div>
