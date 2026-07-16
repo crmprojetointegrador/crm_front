@@ -22,7 +22,11 @@ function Navbar() {
                 <Link to='/home' className="text-5xl font-bold">InteliCob</Link>
 
                 <div className='flex gap-6 items-center'>
+                    <Link to='/categorias' className='hover:underline'>Categorias</Link>
+
                     <Link to='/produtos' className='hover:underline'>Produto</Link>
+
+                    <Link to='/about' className='hover:underline'>Sobre nós</Link>
 
                     {usuario.token !== "" ? (
                         <>
@@ -34,8 +38,6 @@ function Navbar() {
                     ) : (
                         <Link to='/login' className='hover:underline'>Login</Link>
                     )}
-
-                    <Link to='/about' className='hover:underline'>Sobre nós</Link>
                 </div>
             </div>
         </div>
