@@ -59,13 +59,17 @@ function ListarProdutos() {
                     <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
 
                     <div className="mt-2">
-                        <input
-                            type="text"
-                            placeholder="Filtrar por Status (ex: Ativo)..."
+                        <select
                             value={statusFiltro}
                             onChange={(e) => setStatusFiltro(e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-64"
-                        />
+                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00e8ff] w-64 bg-white"
+                        >
+                            <option value="">Todos os Status</option>
+                            <option value="Pago">Pago</option>
+                            <option value="Em acordo">Em acordo</option>
+                            <option value="Em atraso">Em atraso</option>
+                            <option value="Sem negociação">Sem negociação</option>
+                        </select>
                     </div>
                 </div>
 
