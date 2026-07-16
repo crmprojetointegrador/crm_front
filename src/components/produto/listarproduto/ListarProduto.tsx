@@ -88,11 +88,11 @@ function ListarProdutos() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold mb-3">Lista de Cobranças</h1>
 
-                    <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex flex-wrap gap-2">
                         {/* Filtro de Status */}
                         <select
                             value={statusFiltro}
@@ -141,14 +141,14 @@ function ListarProdutos() {
                             </>
                         )}
                     </div>
-                </div>
 
-                <Link
-                    to="/cadastrarproduto"
-                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm self-stretch md:self-auto text-center"
-                >
-                    + Nova Cobrança
-                </Link>
+                    <Link
+                        to="/cadastrarproduto"
+                        className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300 self-stretch md:self-auto text-center"
+                    >
+                        + Nova Cobrança
+                    </Link>
+                </div>
             </div>
 
             {(!isLoading && produtosFiltrados.length === 0) && (
