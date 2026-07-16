@@ -14,6 +14,7 @@ import FormProduto from "./components/produto/formproduto/FormProduto";
 import DeletarProduto from "./components/produto/deletarproduto/DeletarProduto";
 
 import RotaProtegida from "./routes/RotaProtegida";
+import RotaAdmin from "./routes/RotaAdmin";
 import ListaCategoria from "./components/categoria/listarcategoria/ListaCategoria";
 import FormCategoria from "./components/categoria/formcategoria/FormCategoria";
 import DeletarCategoria from "./components/categoria/deletarcategoria/DeletarCategoria";
@@ -63,6 +64,7 @@ function App() {
               }
             />
 
+            {/* Cadastrar cobrança (qualquer usuário logado) */}
             <Route
               path="/cadastrarproduto"
               element={
@@ -72,21 +74,23 @@ function App() {
               }
             />
 
+            {/* Editar cobrança (somente admin) */}
             <Route
               path="/editarproduto/:id"
               element={
-                <RotaProtegida>
+                <RotaAdmin>
                   <FormProduto />
-                </RotaProtegida>
+                </RotaAdmin>
               }
             />
 
+            {/* Deletar cobrança (somente admin) */}
             <Route
               path="/deletarproduto/:id"
               element={
-                <RotaProtegida>
+                <RotaAdmin>
                   <DeletarProduto />
-                </RotaProtegida>
+                </RotaAdmin>
               }
             />
 
@@ -100,7 +104,7 @@ function App() {
               }
             />
 
-            {/* Form de categorias (autenticado) */}
+            {/* Cadastrar categoria (qualquer usuário logado) */}
             <Route
               path="/cadastrarcategoria"
               element={
@@ -110,23 +114,23 @@ function App() {
               }
             />
 
-            {/* Deletar categoria (autenticado) */}
+            {/* Deletar categoria (somente admin) */}
             <Route
               path="/deletarcategoria/:id"
               element={
-                <RotaProtegida>
+                <RotaAdmin>
                   <DeletarCategoria />
-                </RotaProtegida>
+                </RotaAdmin>
               }
             />
 
-            {/* Deletar categoria (autenticado) */}
+            {/* Editar categoria (somente admin) */}
             <Route
               path="/editarcategoria/:id"
               element={
-                <RotaProtegida>
+                <RotaAdmin>
                   <FormCategoria />
-                </RotaProtegida>
+                </RotaAdmin>
               }
             />
 
