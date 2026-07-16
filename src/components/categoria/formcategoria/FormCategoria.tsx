@@ -92,49 +92,63 @@ function FormCategoria() {
         retornar()
     }
     return (
-        <div className="flex justify-center items-center py-16 px-4">
-            <form className="w-full max-w-md bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
-                onSubmit={gerarNovoCategoria}>
+        <div className='container mx-auto px-4 py-8'>
+    <p className='text-center text-gray-500 text-sm mb-6'>
+        {id === undefined ? 'Preencha os dados para cadastrar uma nova categoria' : 'Atualize os dados da categoria a seguir'}
+    </p>
+    <div className='bg-white border border-[#a717eb]/20 rounded-xl shadow-sm overflow-hidden flex flex-col'>
+    <header className='py-3 px-6 bg-[#faf5ff] border-b-2 border-[#a717eb] font-semibold text-[#7a12b0] uppercase text-sm tracking-wide'>
+            {id === undefined ? 'Cadastrar Categoria' : 'Editar Categoria'}
+        </header>
+        <form className="p-6 flex flex-col gap-4" onSubmit={gerarNovoCategoria}>
+            <div className="flex flex-col gap-2">
+                <label htmlFor="nome" className="text-sm font-medium text-gray-700">Nome</label>
+                <input
+                    id="nome"
+                    type="text"
+                    placeholder="Insira nome da categoria"
+                    name='nome'
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={categoria.nome}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
+                />
+            </div>
+            <div className="flex flex-col gap-2">
+                <label htmlFor="descricao" className="text-sm font-medium text-gray-700">Descrição da Categoria</label>
+                <input
+                    id="descricao"
+                    type="text"
+                    placeholder="Descreva aqui sua categoria"
+                    name='descricao'
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={categoria.descricao}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
+                />
+            </div>
 
-                <h1 className="text-2xl font-bold text-center text-gray-800">
-                    {id === undefined ? 'Cadastrar Categoria' : 'Editar Categoria'}
-                </h1>
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="descricao" className="text-sm font-medium text-gray-700">Nome</label>
-                    <input
-                        type="text"
-                        placeholder="Insira nome da categoria"
-                        name='nome'
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        value={categoria.nome}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="descricao" className="text-sm font-medium text-gray-700">Descrição do Categoria</label>
-                    <input
-                        type="text"
-                        placeholder="Descreva aqui sua categoria"
-                        name='descricao'
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        value={categoria.descricao}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-                    />
-                </div>
+            <div className="flex justify-center gap-3 border-t border-gray-100 pt-4 mt-2">
                 <button
-                    className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
-
-                    type="submit">
-
+                    type="button"
+                    className="text-gray-500 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full px-5 py-1.5 text-sm font-medium transition-colors"
+                    onClick={retornar}>
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-full px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300">
                     {isLoading ?
                         <ClipLoader
                             color="#ffffff"
-                            size={24}
+                            size={14}
                         /> :
-                        <span>{id === undefined ? 'Cadastrar' : 'Atualizar'}</span>}
+                        <span>{id === undefined ? 'Cadastrar' : 'Atualizar'}</span>
+                    }
                 </button>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 
     );
