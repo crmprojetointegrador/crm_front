@@ -20,6 +20,7 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                 <thead>
                     <tr className="bg-[#faf5ff] border-b-2 border-[#a717eb]">
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Nome</th>
+                        <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Parcela</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Valor</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Status</th>
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Categoria</th>
@@ -31,6 +32,9 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                     {loading ? (
                         linhasLoading.map((_, index) => (
                             <tr key={index} className="border-t border-gray-100">
+                                <td className="py-3 px-6">
+                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
+                                </td>
                                 <td className="py-3 px-6">
                                     <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
                                 </td>
@@ -57,6 +61,9 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 key={produto.id}
                                 className="border-t border-gray-100 hover:bg-[#faf5ff] transition-colors"
                             >
+                                <td className="py-3 px-6 text-base text-gray-800 font-medium">  {/* ← nome do usuario que deve */}
+                                    {produto.usuario?.nome || 'Usuário não atribuído'}
+                                </td>
                                 <td className="py-3 px-6 text-base font-medium text-gray-800">
                                     {produto.nome}
                                 </td>
