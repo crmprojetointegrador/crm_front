@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiEye, FiEyeOff } from "react-icons/fi";
 import type { Usuario } from "../../../models/Usuario";
 import type { Produto } from "../../../models/Produto";
 
@@ -16,23 +16,41 @@ const STATUS_STYLES: Record<string, string> = {
   "Sem negociação": "bg-gray-100 text-gray-700",
 };
 
-function formatarData(data: string) {
-  if (!data) return "-";
-  const [ano, mes, dia] = data.split("-");
-  return `${dia}/${mes}/${ano}`;
-}
-
-function formatarCpf(cpf: string) {
-  if (!cpf || cpf.length !== 11) return cpf;
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-}
 
 function CardUsuario({ usuarios, produtos, loading }: CardUsuarioProps) {
   const linhasLoading = Array.from({ length: 5 });
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
+  const [cpfVisivel, setCpfVisivel] = useState<number | null>(null);
+
+  function formatarData(data: string) {
+    if (!data) return "-";
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function formatarCpfOculto(cpf: string) {
+    if (!cpf || cpf.length !== 11) return cpf;
+    return `${cpf.slice(0, 3)}.***.***-${cpf.slice(-2)}`;
+  }
+
+  function alternarCpfVisivel(id: number) {
+    setCpfVisivel((atual) => (atual === id ? null : id));
+  }
+
+  function formatarCpfCompleto(cpf: string) {
+    if (!cpf || cpf.length !== 11) return cpf;
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
 
   function alternarExpandido(id: number) {
-    setExpandidoId((atual) => (atual === id ? null : id));
+    setExpandidoId((atual) => {
+      if (atual === id) {
+        return null;
+      } else {
+        setCpfVisivel(null);
+        return id; 
+      }
+    });
   }
 
   return (
@@ -89,7 +107,18 @@ function CardUsuario({ usuarios, produtos, loading }: CardUsuarioProps) {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm mb-4">
                           <div>
                             <span className="block text-gray-500 text-xs uppercase tracking-wide">CPF</span>
-                            <span className="text-gray-800">{formatarCpf(usuario.cpf)}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-800">
+                                {cpfVisivel ? formatarCpfCompleto(usuario.cpf) : formatarCpfOculto(usuario.cpf)}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => alternarCpfVisivel(usuario.id)}
+                                className="text-gray-500 hover:text-gray-700"
+                              >
+                                {cpfVisivel === usuario.id ? <FiEye size={18} /> : <FiEyeOff size={18} />}
+                              </button>
+                            </div>
                           </div>
                           <div>
                             <span className="block text-gray-500 text-xs uppercase tracking-wide">Data de nascimento</span>
