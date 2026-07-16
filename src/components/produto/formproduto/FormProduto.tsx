@@ -203,6 +203,11 @@ function FormProduto() {
         setIsLoading(false)
     }
 
+    function formatarCPF(cpf: string): string {
+        if (!cpf || cpf.length !== 11) return cpf; // Verifica se o CPF é válido
+        return `${cpf.slice(0, 3)}.***.***-${cpf.slice(-2)}`;
+      }
+
     return (
         <div className='container mx-auto px-4 py-8'>
             <p className='text-center text-gray-500 text-sm mb-6'>
@@ -353,7 +358,7 @@ function FormProduto() {
                                                 className="w-full text-left px-3 py-2 hover:bg-purple-50 text-sm"
                                             >
                                                 <span className="font-medium text-gray-800">{u.nome}</span>
-                                                <span className="text-gray-500"> — CPF {u.cpf}</span>
+                                                <span className="text-gray-500"> — CPF {formatarCPF(u.cpf)}</span>
                                                 {u.tipo === "admin" && (
                                                     <span className="text-purple-600"> (admin)</span>
                                                 )}
