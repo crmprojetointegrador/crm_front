@@ -38,7 +38,7 @@ function Home() {
           </div>
           <div className="flex gap-8 pt-8 border-t border-white/20 mt-4">
             <div>
-              <p className="text-2xl font-bold text-white">+30%</p>
+              <p className="text-2xl font-bold text-white">+70%</p>
               <p className="text-sm text-white/70">Eficiência na recuperação</p>
             </div>
             <div>
