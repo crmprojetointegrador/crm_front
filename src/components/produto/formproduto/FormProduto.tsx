@@ -204,182 +204,188 @@ function FormProduto() {
     }
 
     return (
-        <div className="flex justify-center items-center py-16 px-4">
-            <form
-                onSubmit={gerarNovoProduto}
-                className="w-full max-w-md bg-white rounded-lg shadow-md border border-gray-200 p-6 flex flex-col gap-4"
-            >
-                <h1 className="text-2xl font-bold text-center text-gray-800">
-                    {emEdicao ? 'Editar Cobrança' : 'Nova Cobrança'}
-                </h1>
+        <div className='container mx-auto px-4 py-8'>
+            <p className='text-center text-gray-500 text-sm mb-6'>
+                {emEdicao ? 'Atualize os dados da cobrança a seguir' : 'Preencha os dados para cadastrar uma nova cobrança'}
+            </p>
+            <div className='bg-white border border-[#a717eb]/20 rounded-xl shadow-sm overflow-hidden flex flex-col'>
+                <header className='py-3 px-6 bg-[#faf5ff] border-b-2 border-[#a717eb] font-semibold text-[#7a12b0] uppercase text-sm tracking-wide'>
+                    {emEdicao ? 'Editar Cobrança' : 'Cadastrar Cobrança'}
+                </header>
 
-                {erro && (
-                    <p className="text-sm text-red-600 text-center">{erro}</p>
-                )}
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="nome" className="text-sm font-medium text-gray-700">
-                        Parcela
-                    </label>
-                    <input
-                        id="nome"
-                        name="nome"
-                        type="text"
-                        placeholder="Exemplo: 101/250, Limite Especial..."
-                        value={produto.nome}
-                        onChange={atualizarEstado}
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="valorDebito" className="text-sm font-medium text-gray-700">
-                        Valor do débito (R$)
-                    </label>
-                    <input
-                        id="valorDebito"
-                        name="valorDebito"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={produto.valorDebito || ''}
-                        onChange={atualizarEstado}
-                        placeholder="0,00"
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="dataDebito" className="text-sm font-medium text-gray-700">
-                        Data do débito
-                    </label>
-                    <input
-                        id="dataDebito"
-                        name="dataDebito"
-                        type="date"
-                        value={produto.dataDebito}
-                        onChange={atualizarEstado}
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="status" className="text-sm font-medium text-gray-700">
-                        Status
-                    </label>
-                    <select
-                        id="status"
-                        value={produto.status}
-                        onChange={atualizarStatus}
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                        <option value="" disabled>Selecione...</option>
-                        {STATUS_OPCOES.map((status) => (
-                            <option key={status} value={status}>{status}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="categoriaId" className="text-sm font-medium text-gray-700">
-                        Categoria
-                    </label>
-                    <select
-                        id="categoriaId"
-                        value={categoriaId}
-                        onChange={atualizarCategoria}
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                        <option value="" disabled>Selecione...</option>
-                        {categorias.map((categoria) => (
-                            <option key={categoria.id} value={categoria.id}>
-                                {categoria.nome}
-                            </option>
-                        ))}
-                    </select>
-                    {categorias.length === 0 && (
-                        <span className="text-xs text-gray-500">Nenhuma categoria cadastrada ainda.</span>
+                <form className="p-6 flex flex-col gap-4" onSubmit={gerarNovoProduto}>
+                    {erro && (
+                        <p className="text-sm text-red-600 text-center">{erro}</p>
                     )}
-                </div>
 
-                {isAdmin && (
-                    <div className="flex flex-col gap-1 relative">
-                        <label htmlFor="buscaUsuario" className="text-sm font-medium text-gray-700">
-                            Atribuir a (nome ou CPF)
-                        </label>
-
-                        <div className="relative">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="nome" className="text-sm font-medium text-gray-700">
+                                Parcela
+                            </label>
                             <input
-                                id="buscaUsuario"
+                                id="nome"
+                                name="nome"
                                 type="text"
-                                autoComplete="off"
-                                placeholder="Digite o nome ou CPF..."
-                                value={buscaUsuario}
-                                onChange={atualizarBuscaUsuario}
-                                onFocus={() => setSugestoesAbertas(true)}
-                                onBlur={() => setTimeout(() => setSugestoesAbertas(false), 150)}
-                                className="border border-gray-300 rounded-md px-3 py-2 pr-8 w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                placeholder="Exemplo: Parcela 05/30, Limite especial... "
+                                value={produto.nome}
+                                onChange={atualizarEstado}
+                                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                             />
-                            {usuarioSelecionado && (
-                                <button
-                                    type="button"
-                                    onClick={limparUsuarioSelecionado}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
-                                    title="Trocar usuário"
-                                >
-                                    ✕
-                                </button>
-                            )}
                         </div>
 
-                        {usuarioSelecionado && (
-                            <span className="text-xs text-green-600">
-                                Selecionado: {usuarioSelecionado.nome} {usuarioSelecionado.tipo === "admin" ? "(admin)" : ""}
-                            </span>
-                        )}
-
-                        {sugestoesAbertas && !usuarioSelecionado && sugestoes.length > 0 && (
-                            <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md max-h-48 overflow-y-auto z-10">
-                                {sugestoes.map((u) => (
-                                    <li key={u.id}>
-                                        <button
-                                            type="button"
-                                            onClick={() => selecionarUsuario(u)}
-                                            className="w-full text-left px-3 py-2 hover:bg-purple-50 text-sm"
-                                        >
-                                            <span className="font-medium text-gray-800">{u.nome}</span>
-                                            <span className="text-gray-500"> — CPF {u.cpf}</span>
-                                            {u.tipo === "admin" && (
-                                                <span className="text-purple-600"> (admin)</span>
-                                            )}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="valorDebito" className="text-sm font-medium text-gray-700">
+                                Valor do débito (R$)
+                            </label>
+                            <input
+                                id="valorDebito"
+                                name="valorDebito"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={produto.valorDebito || ''}
+                                onChange={atualizarEstado}
+                                placeholder="0,00"
+                                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                        </div>
                     </div>
-                )}
 
-                <div className="flex gap-3 mt-2">
-                    <button
-                        type="button"
-                        onClick={retornar}
-                        className="flex-1 border border-gray-300 text-gray-700 rounded-md py-2 hover:bg-gray-50"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        className="flex-1 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md py-2 flex justify-center disabled:opacity-60"
-                        disabled={isLoading}
-                    >
-                        {isLoading ?
-                            <ClipLoader color="#ffffff" size={20} /> :
-                            <span>Salvar</span>
-                        }
-                    </button>
-                </div>
-            </form>
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="dataDebito" className="text-sm font-medium text-gray-700">
+                            Data do débito
+                        </label>
+                        <input
+                            id="dataDebito"
+                            name="dataDebito"
+                            type="date"
+                            value={produto.dataDebito}
+                            onChange={atualizarEstado}
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="status" className="text-sm font-medium text-gray-700">
+                                Status
+                            </label>
+                            <select
+                                id="status"
+                                value={produto.status}
+                                onChange={atualizarStatus}
+                                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                                <option value="" disabled>Selecione...</option>
+                                {STATUS_OPCOES.map((status) => (
+                                    <option key={status} value={status}>{status}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="categoriaId" className="text-sm font-medium text-gray-700">
+                                Categoria
+                            </label>
+                            <select
+                                id="categoriaId"
+                                value={categoriaId}
+                                onChange={atualizarCategoria}
+                                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                                <option value="" disabled>Selecione...</option>
+                                {categorias.map((categoria) => (
+                                    <option key={categoria.id} value={categoria.id}>
+                                        {categoria.nome}
+                                    </option>
+                                ))}
+                            </select>
+                            {categorias.length === 0 && (
+                                <span className="text-xs text-gray-500">Nenhuma categoria cadastrada ainda.</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {isAdmin && (
+                        <div className="flex flex-col gap-2 relative">
+                            <label htmlFor="buscaUsuario" className="text-sm font-medium text-gray-700">
+                                Atribuir a (nome ou CPF)
+                            </label>
+
+                            <div className="relative">
+                                <input
+                                    id="buscaUsuario"
+                                    type="text"
+                                    autoComplete="off"
+                                    placeholder="Digite o nome ou CPF..."
+                                    value={buscaUsuario}
+                                    onChange={atualizarBuscaUsuario}
+                                    onFocus={() => setSugestoesAbertas(true)}
+                                    onBlur={() => setTimeout(() => setSugestoesAbertas(false), 150)}
+                                    className="border border-gray-300 rounded-md px-3 py-2 pr-8 w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                />
+                                {usuarioSelecionado && (
+                                    <button
+                                        type="button"
+                                        onClick={limparUsuarioSelecionado}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
+                                        title="Trocar usuário"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
+
+                            {usuarioSelecionado && (
+                                <span className="text-xs text-green-600">
+                                    Selecionado: {usuarioSelecionado.nome} {usuarioSelecionado.tipo === "admin" ? "(admin)" : ""}
+                                </span>
+                            )}
+
+                            {sugestoesAbertas && !usuarioSelecionado && sugestoes.length > 0 && (
+                                <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md max-h-48 overflow-y-auto z-10">
+                                    {sugestoes.map((u) => (
+                                        <li key={u.id}>
+                                            <button
+                                                type="button"
+                                                onClick={() => selecionarUsuario(u)}
+                                                className="w-full text-left px-3 py-2 hover:bg-purple-50 text-sm"
+                                            >
+                                                <span className="font-medium text-gray-800">{u.nome}</span>
+                                                <span className="text-gray-500"> — CPF {u.cpf}</span>
+                                                {u.tipo === "admin" && (
+                                                    <span className="text-purple-600"> (admin)</span>
+                                                )}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="flex justify-center gap-3 border-t border-gray-100 pt-4 mt-2">
+                        <button
+                            type="button"
+                            className="text-gray-500 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full px-5 py-1.5 text-sm font-medium transition-colors"
+                            onClick={retornar}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-full px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300"
+                        >
+                            {isLoading ?
+                                <ClipLoader color="#ffffff" size={14} /> :
+                                <span>{emEdicao ? 'Atualizar' : 'Cadastrar'}</span>
+                            }
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
