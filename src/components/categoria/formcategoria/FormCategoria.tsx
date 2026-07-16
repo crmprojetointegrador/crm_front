@@ -139,7 +139,7 @@ function FormCategoria() {
                             className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-full px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300">
                             {isLoading ?
                                 <ClipLoader
-                                    color="#ffffff"
+                                    color="#a717eb"
                                     size={14}
                                 /> :
                                 <span>{id === undefined ? 'Cadastrar' : 'Atualizar'}</span>
