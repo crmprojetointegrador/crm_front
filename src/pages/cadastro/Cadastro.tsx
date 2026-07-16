@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import type { Usuario } from "../../models/Usuario"
 
 const TIPO_PADRAO = "USER"
+const IDADE_MINIMA = 16
 
 function Cadastro() {
 
@@ -13,6 +14,7 @@ function Cadastro() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [confirmarSenha, setConfirmaSenha] = useState<string>("")
+    const [erro, setErro] = useState<string>("")
 
     const [usuario, setUsuario] = useState<Usuario>({
         id: 0,
@@ -41,27 +43,67 @@ function Cadastro() {
         })
     }
 
+    function atualizarCpf(e: ChangeEvent<HTMLInputElement>) {
+        const somenteDigitos = e.target.value.replace(/\D/g, '').slice(0, 11)
+        setUsuario({
+            ...usuario,
+            cpf: somenteDigitos
+        })
+    }
+
     function handleConfirmarSenha(e: ChangeEvent<HTMLInputElement>) {
         setConfirmaSenha(e.target.value)
     }
 
+    function calcularIdade(dataNascimento: string): number {
+        const hoje = new Date()
+        const nascimento = new Date(dataNascimento)
+
+        let idade = hoje.getFullYear() - nascimento.getFullYear()
+        const aindaNaoFezAniversarioEsseAno =
+            hoje.getMonth() < nascimento.getMonth() ||
+            (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())
+
+        if (aindaNaoFezAniversarioEsseAno) {
+            idade--
+        }
+
+        return idade
+    }
+
     async function cadastrarNovoUsuario(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        setErro('')
 
-        if (confirmarSenha === usuario.senha && usuario.senha.length >= 6) {
+        if (usuario.cpf.length !== 11) {
+            setErro('Informe um CPF válido, com 11 dígitos.')
+            return
+        }
 
-            setIsLoading(true)
+        if (!usuario.dataNascimento) {
+            setErro('Informe a data de nascimento.')
+            return
+        }
 
-            try {
-                await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario)
-                alert('Usuário cadastrado com sucesso!')
-            } catch (error) {
-                alert('Erro ao cadastrar o usuário!')
-            }
-        } else {
-            alert('Dados do usuário inconsistentes! Verifique as informações do cadastro.')
+        if (calcularIdade(usuario.dataNascimento) < IDADE_MINIMA) {
+            setErro(`É necessário ter pelo menos ${IDADE_MINIMA} anos para se cadastrar.`)
+            return
+        }
+
+        if (confirmarSenha !== usuario.senha || usuario.senha.length < 6) {
+            setErro('Dados do usuário inconsistentes! Verifique as informações do cadastro.')
             setUsuario({ ...usuario, senha: '' })
             setConfirmaSenha('')
+            return
+        }
+
+        setIsLoading(true)
+
+        try {
+            await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario)
+            alert('Usuário cadastrado com sucesso!')
+        } catch (error) {
+            setErro('Não foi possível cadastrar. Confira se o CPF já não está em uso.')
         }
 
         setIsLoading(false)
@@ -74,6 +116,10 @@ function Cadastro() {
                 onSubmit={cadastrarNovoUsuario}>
 
                 <h2 className='text-slate-900 text-3xl font-bold'>Cadastrar</h2>
+
+                {erro && (
+                    <p className="text-sm text-red-600 text-center">{erro}</p>
+                )}
 
                 <div className="flex flex-col w-full gap-1">
                     <label htmlFor="nome" className="text-sm font-medium text-gray-700">Nome completo</label>
@@ -97,10 +143,11 @@ function Cadastro() {
                         name="cpf"
                         placeholder="Somente números"
                         inputMode="numeric"
+                        maxLength={11}
                         autoComplete="off"
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         value={usuario.cpf}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
+                        onChange={atualizarCpf}
                     />
                 </div>
 
@@ -170,6 +217,7 @@ function Cadastro() {
                     <button
                         type='submit'
                         className='rounded-md text-white bg-gradient-to-r from-[#a717eb] to-[#00e8ff] w-1/2 py-2 flex justify-center'
+                        disabled={isLoading}
                     >
                         {isLoading ?
                             <ClipLoader
