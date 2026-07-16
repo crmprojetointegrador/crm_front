@@ -16,6 +16,7 @@ function ListarProdutos() {
 
     const { usuario, handleLogout } = useContext(AuthContext)
     const token = usuario.token
+    const isAdmin = usuario.tipo === "admin"
 
     useEffect(() => {
         if (token === '') {
@@ -44,6 +45,11 @@ function ListarProdutos() {
         }
     }
 
+    // Admin vê tudo. Usuário comum vê só as cobranças atribuídas a ele mesmo.
+    const produtosVisiveis = isAdmin
+        ? produtos
+        : produtos.filter((produto) => produto.usuario?.id === usuario.id)
+
     return (
         <div className="container mx-auto px-4 py-8">
 
@@ -57,18 +63,18 @@ function ListarProdutos() {
                 <h1 className="text-2xl font-bold">Lista de Cobranças</h1>
                 <Link
                     to="/cadastrarproduto"
-                    className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm"
+                    className="bg-gradient-to-rfrom-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm"
                 >
                     + Nova Cobrança
                 </Link>
             </div>
 
-            {(!isLoading && produtos.length === 0) && (
+            {(!isLoading && produtosVisiveis.length === 0) && (
                 <p className="text-gray-500 text-center py-8">Nenhuma cobrança cadastrada ainda.</p>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {produtos.map((produto) => (
+                {produtosVisiveis.map((produto) => (
                     <CardProduto
                         key={produto.id}
                         produto={produto}

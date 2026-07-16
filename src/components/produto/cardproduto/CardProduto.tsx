@@ -44,6 +44,12 @@ function CardProduto({ produto }: CardProdutoProps) {
                 </p>
             )}
 
+            {isAdmin && produto.usuario && (
+                <p className="text-gray-500 text-sm">
+                    <strong>Atribuído a:</strong> {produto.usuario.nome}
+                </p>
+            )}
+
             {isAdmin && (
                 <div className="flex gap-4 mt-2 pt-2 border-t border-gray-100">
 

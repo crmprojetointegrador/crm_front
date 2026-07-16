@@ -15,7 +15,7 @@ function Navbar() {
     }
 
     return (
-        <div className=" w-full bg-gradient-to-r from-[#a717eb] to-[#00e8ff] flex-col items-center px-8 py-4">
+        <div className=" w-full bg-gradient-to-rfrom-[#a717eb] to-[#00e8ff] flex-col items-center px-8 py-4">
             <h1 className="text-white text-2xl font-bold"></h1>
 
             <div className="w-full flex justify-between">
@@ -30,7 +30,9 @@ function Navbar() {
 
                     {usuario.token !== "" ? (
                         <>
-                            <span className="text-sm">Olá, {usuario.nome}</span>
+                            <Link to='/perfil' className="text-sm hover:underline">
+                                Olá, {usuario.nome}
+                            </Link>
                             <button onClick={logout} className='hover:underline cursor-pointer'>
                                 Sair
                             </button>
