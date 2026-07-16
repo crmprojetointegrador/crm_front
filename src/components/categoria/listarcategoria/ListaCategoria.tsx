@@ -15,6 +15,7 @@ function ListaCategorias() {
     const [categorias, setCategorias] = useState<Categoria[]>([])
 
     const { usuario, handleLogout } = useContext(AuthContext)
+    const isAdmin = usuario.tipo?.trim().toLowerCase() === "admin";
     const token = usuario.token
 
     useEffect(() => {
@@ -48,6 +49,7 @@ function ListaCategorias() {
     return (
         <div className="container mx-auto px-4 py-8">
             <>
+                {isAdmin && (
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">Categorias</h1>
                         <Link
@@ -57,15 +59,17 @@ function ListaCategorias() {
                             + Nova Categoria
                         </Link>
                     </div>
-    
-                    {!isLoading && categorias.length === 0 && (
-                        <p className="text-gray-500 text-center py-8">Nenhuma categoria cadastrada ainda.</p>
-                    )}
-    
-                    <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
-                        <CardCategoria categorias={categorias} loading={isLoading} />
-                    </div>
-                </>
+
+                )}
+
+                {!isLoading && categorias.length === 0 && (
+                    <p className="text-gray-500 text-center py-8">Nenhuma categoria cadastrada ainda.</p>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-3">
+                    <CardCategoria categorias={categorias} loading={isLoading} />
+                </div>
+            </>
         </div>
     )
 }
