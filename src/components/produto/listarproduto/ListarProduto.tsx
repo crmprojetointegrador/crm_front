@@ -11,13 +11,13 @@ function ListarProdutos() {
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const [produtos, setProdutos] = useState<Produto[]>([]);
-
     const [statusFiltro, setStatusFiltro] = useState<string>("");
 
+    // Unindo estados e dados de autenticação de ambas as branches
     const { usuario, handleLogout } = useContext(AuthContext);
     const token = usuario.token;
+    const isAdmin = usuario.tipo === "admin";
 
     useEffect(() => {
         if (token === '') {
@@ -52,6 +52,11 @@ function ListarProdutos() {
         }
     }
 
+    // Regra de segurança mantida: Admin vê tudo. Usuário comum vê só as cobranças atribuídas a ele mesmo.
+    const produtosVisiveis = isAdmin
+        ? produtos
+        : produtos.filter((produto) => produto.usuario?.id === usuario.id);
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -75,46 +80,43 @@ function ListarProdutos() {
 
                 <Link
                     to="/cadastrarproduto"
+                    // Mantida a versão responsiva e com o espaçamento correto no className da main (from-rfrom corrigido para from-r)
                     className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm self-stretch md:self-auto text-center"
                 >
                     + Nova Cobrança
                 </Link>
             </div>
 
-            {
-                isLoading && (
-                    <div className="flex justify-center py-16">
-                        <SyncLoader color="#a717eb" size={16} />
-                    </div>
-                )
-            }
+            {/* Spinner de Loading */}
+            {isLoading && (
+                <div className="flex justify-center py-16">
+                    <SyncLoader color="#a717eb" size={16} />
+                </div>
+            )}
 
-            {
-                (!isLoading && produtos.length === 0) && (
-                    <p className="text-gray-500 text-center py-8">
-                        {statusFiltro
-                            ? "Nenhuma cobrança encontrada com esse status."
-                            : "Nenhuma cobrança cadastrada ainda."
-                        }
-                    </p>
-                )
-            }
+            {/* Tratamento para lista vazia (Aplica o filtro de visibilidade do usuário comum/admin) */}
+            {(!isLoading && produtosVisiveis.length === 0) && (
+                <p className="text-gray-500 text-center py-8">
+                    {statusFiltro
+                        ? "Nenhuma cobrança encontrada com esse status."
+                        : "Nenhuma cobrança cadastrada ainda."
+                    }
+                </p>
+            )}
 
-            {
-                !isLoading && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {produtos.map((produto) => (
-                            <CardProduto
-                                key={produto.id}
-                                produto={produto}
-                            />
-                        ))}
-                    </div>
-                )
-            }
+            {/* Renderização da Lista (Utiliza os produtosVisiveis ao invés de renderizar todos os produtos indiscriminadamente) */}
+            {!isLoading && produtosVisiveis.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {produtosVisiveis.map((produto) => (
+                        <CardProduto
+                            key={produto.id}
+                            produto={produto}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
-
 }
 
 export default ListarProdutos;

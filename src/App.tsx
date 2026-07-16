@@ -19,6 +19,10 @@ import ListaCategoria from "./components/categoria/listarcategoria/ListaCategori
 import FormCategoria from "./components/categoria/formcategoria/FormCategoria";
 import DeletarCategoria from "./components/categoria/deletarcategoria/DeletarCategoria";
 
+import FormPerfil from "./components/perfil/formperfil/FormPerfil";
+import DeletarPerfil from "./components/perfil/deletarperfil/DeletarPerfil";
+import Perfil from "./components/perfil/Perfil";
+
 function App() {
   return (
     <>
@@ -131,6 +135,36 @@ function App() {
                 <RotaAdmin>
                   <FormCategoria />
                 </RotaAdmin>
+              }
+            />
+
+            {/* Ver o próprio perfil (qualquer usuário logado) */}
+            <Route
+              path="/perfil"
+              element={
+                <RotaProtegida>
+                  <Perfil />
+                </RotaProtegida>
+              }
+            />
+
+            {/* Editar o próprio perfil (qualquer usuário logado) */}
+            <Route
+              path="/editarperfil"
+              element={
+                <RotaProtegida>
+                  <FormPerfil />
+                </RotaProtegida>
+              }
+            />
+
+            {/* Deletar a própria conta (qualquer usuário logado) */}
+            <Route
+              path="/deletarperfil"
+              element={
+                <RotaProtegida>
+                  <DeletarPerfil />
+                </RotaProtegida>
               }
             />
 
