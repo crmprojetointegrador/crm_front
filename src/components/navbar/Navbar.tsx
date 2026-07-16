@@ -41,7 +41,35 @@ function Navbar() {
             <h1 className="text-white text-2xl font-bold"></h1>
 
             <div className="w-full flex justify-between">
-                <Link to='/home' className="text-5xl font-bold">InteliCob</Link>
+                <Link to='/home'>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" className="h-16 w-auto">
+                        <defs>
+                            <linearGradient id="intelio-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#FFFFFF" />
+                                <stop offset="100%" stopColor="#00e8ff" />
+                            </linearGradient>
+                        </defs>
+
+                        <g transform="translate(15, 10)">
+                            <path d="M40 100 A 45 45 0 1 1 115 135" stroke="#FFFFFF" strokeWidth="10" strokeLinecap="round" fill="none" opacity="0.4" />
+                            <path d="M125 90 A 45 45 0 0 1 70 145" stroke="#00e8ff" strokeWidth="12" strokeLinecap="round" fill="none" />
+                            <path d="M65 65 L95 95 L140 50 M140 50 H115 M140 50 V75"
+                                stroke="url(#intelio-grad)"
+                                strokeWidth="10"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                fill="none" />
+                        </g>
+
+                        <text x="210" y="112" fontFamily="'Segoe UI', Roboto, Helvetica, sans-serif" fontSize="56" fontWeight="900" fill="#FFFFFF" letterSpacing="-0.5">
+                            Inteli<tspan fill="#00e8ff">Cob</tspan>
+                        </text>
+
+                        <text x="214" y="145" fontFamily="'Segoe UI', Roboto, Helvetica, sans-serif" fontSize="14" fontWeight="700" fill="#FFFFFF" letterSpacing="4.5" opacity="0.9">
+                            ORGANIZAÇÃO INTELIGENTE DE PASSIVOS
+                        </text>
+                    </svg>
+                </Link>
 
                 <div className='flex gap-6 items-center'>
 
