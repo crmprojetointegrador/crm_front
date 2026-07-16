@@ -24,7 +24,6 @@ import DeletarPerfil from "./components/perfil/deletarperfil/DeletarPerfil";
 import Perfil from "./components/perfil/Perfil";
 import ListarUsuarios from "./components/usuario/listarusuario/ListarUsuario";
 
-
 function App() {
   return (
     <>

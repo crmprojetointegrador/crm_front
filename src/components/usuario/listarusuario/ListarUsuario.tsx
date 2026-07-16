@@ -5,6 +5,7 @@ import type { Usuario } from "../../../models/Usuario";
 import type { Produto } from "../../../models/Produto";
 import { buscar } from "../../../services/Service";
 import CardUsuario from "../cardusuario/CardUsuario";
+import ModalCadastrarUsuario from "../cadastrarusuario/ModalCadastrarUsuario";
 
 function ListarUsuarios() {
 
@@ -14,6 +15,7 @@ function ListarUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [busca, setBusca] = useState<string>("");
+  const [modalAberto, setModalAberto] = useState<boolean>(false);
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
@@ -74,13 +76,21 @@ function ListarUsuarios() {
           <p className="text-sm text-gray-500 mt-1">Clique em um nome para ver os dados e as cobranças dele.</p>
         </div>
 
-        <input
-          type="text"
-          placeholder="Buscar por nome ou CPF..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#00e8ff] bg-white"
-        />
+        <div className="flex gap-2 w-full md:w-auto">
+          <input
+            type="text"
+            placeholder="Buscar por nome ou CPF..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm flex-1 md:w-64 focus:outline-none focus:ring-2 focus:ring-[#00e8ff] bg-white"
+          />
+          <button
+            onClick={() => setModalAberto(true)}
+            className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300 whitespace-nowrap"
+          >
+            + Novo Usuário
+          </button>
+        </div>
       </div>
 
       {(!isLoading && usuariosVisiveis.length === 0) && (
@@ -92,6 +102,12 @@ function ListarUsuarios() {
       {(isLoading || usuariosVisiveis.length > 0) && (
         <CardUsuario usuarios={usuariosVisiveis} produtos={produtos} loading={isLoading} />
       )}
+
+      <ModalCadastrarUsuario
+        aberto={modalAberto}
+        onFechar={() => setModalAberto(false)}
+        onCadastrado={buscarUsuarios}
+      />
     </div>
   );
 }
