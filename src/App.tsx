@@ -33,7 +33,7 @@ function App() {
         <div className="min-h-screen flex flex-col">
           <Navbar />
 
-          <main  className="flex-grow">
+          <main className="flex-grow">
             <Routes>
 
               <Route
@@ -141,46 +141,45 @@ function App() {
                 }
               />
 
-            {/* Ver o próprio perfil (qualquer usuário logado) */}
-            <Route
-              path="/perfil"
-              element={
-                <RotaProtegida>
-                  <Perfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Ver o próprio perfil (qualquer usuário logado) */}
+              <Route
+                path="/perfil"
+                element={
+                  <RotaProtegida>
+                    <Perfil />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Editar o próprio perfil (qualquer usuário logado) */}
-            <Route
-              path="/editarperfil"
-              element={
-                <RotaProtegida>
-                  <FormPerfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Editar o próprio perfil (qualquer usuário logado) */}
+              <Route
+                path="/editarperfil"
+                element={
+                  <RotaProtegida>
+                    <FormPerfil />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Deletar a própria conta (qualquer usuário logado) */}
-            <Route
-              path="/deletarperfil"
-              element={
-                <RotaProtegida>
-                  <DeletarPerfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Deletar a própria conta (qualquer usuário logado) */}
+              <Route
+                path="/deletarperfil"
+                element={
+                  <RotaProtegida>
+                    <DeletarPerfil />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Lista de usuários comuns (somente admin) */}
-            <Route
-              path="/usuarios"
-              element={
-                <RotaAdmin>
-                  <ListarUsuarios />
-                </RotaAdmin>
-              }
-            />
-
+              {/* Lista de usuários comuns (somente admin) */}
+              <Route
+                path="/usuarios"
+                element={
+                  <RotaAdmin>
+                    <ListarUsuarios />
+                  </RotaAdmin>
+                }
+              />
 
             </Routes>
           </main>
