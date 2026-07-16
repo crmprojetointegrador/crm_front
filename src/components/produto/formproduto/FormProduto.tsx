@@ -219,12 +219,13 @@ function FormProduto() {
 
                 <div className="flex flex-col gap-1">
                     <label htmlFor="nome" className="text-sm font-medium text-gray-700">
-                        Nome
+                        Parcela
                     </label>
                     <input
                         id="nome"
                         name="nome"
                         type="text"
+                        placeholder="Exemplo: 101/250, Limite Especial..."
                         value={produto.nome}
                         onChange={atualizarEstado}
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -241,8 +242,9 @@ function FormProduto() {
                         type="number"
                         step="0.01"
                         min="0"
-                        value={produto.valorDebito}
+                        value={produto.valorDebito || ''}
                         onChange={atualizarEstado}
+                        placeholder="0,00"
                         className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                 </div>
