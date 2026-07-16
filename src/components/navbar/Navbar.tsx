@@ -12,6 +12,8 @@ function Navbar() {
     const menuRef = useRef<HTMLDivElement>(null);
     const token = usuario.token
 
+    const isAdmin = usuario.tipo?.toLowerCase() === "admin";
+
     useEffect(() => {
         function fecharAoClicarFora(e: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -73,11 +75,15 @@ function Navbar() {
                 <div className='flex gap-6 items-center'>
 
                     {usuario.token !== "" ? (
-                      <>
-                        <Link to='/categorias' className='hover:underline text-white'>Categorias</Link>
-                        <Link to='/produtos' className='hover:underline text-white'>Cobranças</Link>
-                      </>
+                        <>
+                            <Link to='/categorias' className='hover:underline text-white'>Categorias</Link>
+                            <Link to='/produtos' className='hover:underline text-white'>Cobranças</Link>
+                        </>
                     ) : null}
+
+                    {isAdmin && (
+                        <Link to='/usuarios' className='hover:underline text-white'>Usuários</Link>
+                    )}
 
                     <Link to='/about' className='hover:underline text-white'>Sobre nós</Link>
 

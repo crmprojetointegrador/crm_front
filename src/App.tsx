@@ -22,6 +22,8 @@ import DeletarCategoria from "./components/categoria/deletarcategoria/DeletarCat
 import FormPerfil from "./components/perfil/formperfil/FormPerfil";
 import DeletarPerfil from "./components/perfil/deletarperfil/DeletarPerfil";
 import Perfil from "./components/perfil/Perfil";
+import ListarUsuarios from "./components/usuario/listarusuario/ListarUsuario";
+
 
 function App() {
   return (
@@ -31,7 +33,7 @@ function App() {
         <div className="min-h-screen flex flex-col">
           <Navbar />
 
-          <main  className="flex-grow">
+          <main className="flex-grow">
             <Routes>
 
               <Route
@@ -139,36 +141,45 @@ function App() {
                 }
               />
 
-            {/* Ver o próprio perfil (qualquer usuário logado) */}
-            <Route
-              path="/perfil"
-              element={
-                <RotaProtegida>
-                  <Perfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Ver o próprio perfil (qualquer usuário logado) */}
+              <Route
+                path="/perfil"
+                element={
+                  <RotaProtegida>
+                    <Perfil />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Editar o próprio perfil (qualquer usuário logado) */}
-            <Route
-              path="/editarperfil"
-              element={
-                <RotaProtegida>
-                  <FormPerfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Editar o próprio perfil (qualquer usuário logado) */}
+              <Route
+                path="/editarperfil"
+                element={
+                  <RotaProtegida>
+                    <FormPerfil />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Deletar a própria conta (qualquer usuário logado) */}
-            <Route
-              path="/deletarperfil"
-              element={
-                <RotaProtegida>
-                  <DeletarPerfil />
-                </RotaProtegida>
-              }
-            />
+              {/* Deletar a própria conta (qualquer usuário logado) */}
+              <Route
+                path="/deletarperfil"
+                element={
+                  <RotaProtegida>
+                    <DeletarPerfil />
+                  </RotaProtegida>
+                }
+              />
 
+              {/* Lista de usuários comuns (somente admin) */}
+              <Route
+                path="/usuarios"
+                element={
+                  <RotaAdmin>
+                    <ListarUsuarios />
+                  </RotaAdmin>
+                }
+              />
 
             </Routes>
           </main>

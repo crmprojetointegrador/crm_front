@@ -10,7 +10,7 @@ function ListarProdutos() {
 
     const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -144,7 +144,7 @@ function ListarProdutos() {
 
                     <Link
                         to="/cadastrarproduto"
-                        className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent font-semibold rounded-md px-4 py-2 text-sm border border-transparent hover:border-[#a717eb] transition-colors duration-300 self-stretch md:self-auto text-center"
+                        className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-semibold rounded-md px-4 py-2 text-sm self-stretch md:self-auto text-center"
                     >
                         + Nova Cobrança
                     </Link>

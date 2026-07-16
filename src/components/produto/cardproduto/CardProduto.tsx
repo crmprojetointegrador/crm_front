@@ -5,8 +5,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 interface CardProdutoProps {
-    produtos: Produto[]
-    loading: boolean
+    produtos: Produto[];
+    loading: boolean;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -14,13 +14,13 @@ const STATUS_STYLES: Record<string, string> = {
     "Em acordo": "bg-blue-100 text-blue-700",
     "Em atraso": "bg-red-100 text-red-700",
     "Sem negociação": "bg-gray-100 text-gray-700",
-}
+};
 
 function CardProduto({ produtos, loading }: CardProdutoProps) {
-    const linhasLoading = Array.from({ length: 5 })
+    const linhasLoading = Array.from({ length: 5 });
 
-    const { usuario } = useContext(AuthContext)
-    const isAdmin = usuario.tipo?.toLowerCase() === "admin"
+    const { usuario } = useContext(AuthContext);
+    const isAdmin = usuario.tipo?.trim().toLowerCase() === "admin";
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-[#a717eb]/20 overflow-hidden">
