@@ -32,7 +32,7 @@ function DeletarProduto() {
     useEffect(() => {
         if (token === '') {
             alert('Você precisa estar logado!')
-            navigate('/login')
+            navigate('/')
         }
     }, [token])
 
@@ -67,30 +67,48 @@ function DeletarProduto() {
     }
 
     return (
-        <div className='container w-full max-w-sm mx-auto py-16 px-4'>
-            <h1 className='text-2xl font-bold text-center mb-4'>Deletar Cobrança</h1>
-            <p className='text-center text-gray-600 mb-4'>
+        <div className='container mx-auto px-4 py-8'>
+            <p className='text-center text-gray-500 text-sm mb-6'>
                 Você tem certeza de que deseja apagar a cobrança a seguir?
             </p>
-            <div className='border border-gray-200 rounded-lg overflow-hidden flex flex-col'>
-                <header className='py-2 px-4 bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white font-bold'>
-                    {produto.nome}
+            <div className='bg-white border border-[#a717eb]/20 rounded-xl shadow-sm overflow-hidden flex flex-col'>
+                <header className='py-3 px-6 bg-[#faf5ff] border-b-2 border-[#a717eb]'>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <span className="text-xs font-normal text-gray-500 block">Cliente</span>
+                            <span className="text-base font-semibold text-gray-800">
+                                {produto.usuario?.nome || 'Não atribuído'}
+                            </span>
+                        </div>
+                        <div>
+                            <span className="text-xs font-normal text-gray-500 block">Cobrança</span>
+                            <span className="text-base font-semibold text-gray-800">
+                                {produto.nome}
+                            </span>
+                        </div>
+                        <div>
+                            <span className="text-xs font-normal text-gray-500 block">Categoria</span>
+                            <span className="text-base font-semibold text-gray-800">
+                                {produto.categoria?.nome || 'Sem categoria'}
+                            </span>
+                        </div>
+                    </div>
                 </header>
-                <p className='p-4 bg-gray-50 text-gray-700'>
-                    Valor: R$ {produto.valorDebito?.toFixed(2)}
+                <p className='p-6 text-gray-600 text-base'>
+                    Valor: R$ {produto.valorDebito?.toFixed(2).replace('.', ',')}
                 </p>
-                <div className="flex">
+                <div className="flex justify-center gap-3 border-t border-gray-100 py-4 px-6">
                     <button
-                        className='text-white bg-gray-400 hover:bg-gray-500 w-full py-2'
+                        className="text-gray-500 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full px-5 py-1.5 text-sm font-medium transition-colors"
                         onClick={retornar}>
                         Não
                     </button>
                     <button
-                        className='w-full text-white bg-red-500 hover:bg-red-600 flex items-center justify-center py-2'
+                        className="text-red-500 border hover:border-red-400 hover:bg-red-50 rounded-full px-5 py-1.5 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
                         onClick={deletarProduto}>
                         {isLoading ?
-                            <ClipLoader color="#ffffff" size={20} /> :
-                            <span>Sim</span>
+                            <ClipLoader color="#ef4444" size={14} /> :
+                            <span>Sim, deletar</span>
                         }
                     </button>
                 </div>
