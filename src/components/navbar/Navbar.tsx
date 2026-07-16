@@ -67,7 +67,7 @@ function Navbar() {
                         </text>
 
                         <text x="214" y="145" fontFamily="'Segoe UI', Roboto, Helvetica, sans-serif" fontSize="14" fontWeight="700" fill="#FFFFFF" letterSpacing="4.5" opacity="0.9">
-                            ORGANIZAÇÃO INTELIGENTE DE PASSIVOS
+                            ORGANIZAÇÃO INTELIGENTE DE ATIVOS
                         </text>
                     </svg>
                 </Link>
@@ -76,22 +76,22 @@ function Navbar() {
 
                     {usuario.token !== "" ? (
                         <>
-                            <Link to='/categorias' className='hover:underline text-white'>Categorias</Link>
-                            <Link to='/produtos' className='hover:underline text-white'>Cobranças</Link>
+                            <Link to='/categorias' className='hover:underline text-fuchsia-950'>Categorias</Link>
+                            <Link to='/produtos' className='hover:underline text-fuchsia-950'>Cobranças</Link>
                         </>
                     ) : null}
 
                     {isAdmin && (
-                        <Link to='/usuarios' className='hover:underline text-white'>Usuários</Link>
+                        <Link to='/usuarios' className='hover:underline text-fuchsia-950'>Usuários</Link>
                     )}
 
-                    <Link to='/about' className='hover:underline text-white'>Sobre nós</Link>
+                    <Link to='/about' className='hover:underline text-fuchsia-950'>Sobre nós</Link>
 
                     {usuario.token !== "" ? (
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => setMenuAberto((aberto) => !aberto)}
-                                className="text-sm hover:underline flex items-center gap-1 cursor-pointer text-white"
+                                className="text-sm hover:underline flex items-center gap-1 cursor-pointer text-fuchsia-950"
                             >
                                 Olá, {usuario.nome}
                                 <span className={`text-xs transition-transform ${menuAberto ? "rotate-180" : ""}`}>▾</span>
@@ -122,7 +122,7 @@ function Navbar() {
                             )}
                         </div>
                     ) : (
-                        <Link to='/login' className='hover:underline text-white'>Login</Link>
+                        <Link to='/login' className='hover:underline text-fuchsia-950'>Login</Link>
                     )}
                 </div>
             </div>
