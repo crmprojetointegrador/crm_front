@@ -34,7 +34,6 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                         <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Categoria</th>
                         {isAdmin && (
                             <>
-                                <th className="py-3 px-6 font-semibold text-sm tracking-wide uppercase text-[#7a12b0]">Atribuído a</th>
                                 <th className="py-3 pl-2 pr-1 font-semibold text-sm tracking-wide uppercase text-center w-10"></th>
                                 <th className="py-3 pl-1 pr-6 font-semibold text-sm tracking-wide uppercase text-center w-10"></th>
                             </>
@@ -62,9 +61,6 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 </td>
                                 {isAdmin && (
                                     <>
-                                        <td className="py-3 px-6">
-                                            <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3" />
-                                        </td>
                                         <td className="py-3 pl-2 pr-1 text-center">
                                             <div className="h-5 w-5 bg-gray-200 rounded animate-pulse mx-auto" />
                                         </td>
@@ -101,9 +97,6 @@ function CardProduto({ produtos, loading }: CardProdutoProps) {
                                 </td>
                                 {isAdmin && (
                                     <>
-                                        <td className="py-3 px-6 text-base text-gray-500">
-                                            {produto.usuario?.nome || '-'}
-                                        </td>
                                         <td className="py-3 pl-2 pr-1 text-center">
                                             <Link
                                                 to={`/editarproduto/${produto.id}`}
