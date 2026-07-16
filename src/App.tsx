@@ -28,115 +28,116 @@ function App() {
     <>
       <ToastContainer />
       <BrowserRouter>
-        <Navbar />
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
 
-        <div className="min-h-[80vh]">
-          <Routes>
+          <main  className="flex-grow">
+            <Routes>
 
-            <Route
-              path="/"
-              element={<Home />} />
+              <Route
+                path="/"
+                element={<Home />} />
 
-            <Route
-              path="/home" element={<Home />} />
+              <Route
+                path="/home" element={<Home />} />
 
-            {/* Login */}
-            <Route
-              path="/login"
-              element={<Login />}
-            />
+              {/* Login */}
+              <Route
+                path="/login"
+                element={<Login />}
+              />
 
-            {/* Cadastro de usuário */}
-            <Route
-              path="/cadastro"
-              element={<Cadastro />}
-            />
+              {/* Cadastro de usuário */}
+              <Route
+                path="/cadastro"
+                element={<Cadastro />}
+              />
 
-            {/* Sobre Nós */}
-            <Route
-              path="/about"
-              element={<About />}
-            />
+              {/* Sobre Nós */}
+              <Route
+                path="/about"
+                element={<About />}
+              />
 
-            {/* Lista de produtos (autenticado) */}
-            <Route
-              path="/produtos"
-              element={
-                <RotaProtegida>
-                  <ListarProdutos />
-                </RotaProtegida>
-              }
-            />
+              {/* Lista de produtos (autenticado) */}
+              <Route
+                path="/produtos"
+                element={
+                  <RotaProtegida>
+                    <ListarProdutos />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Cadastrar cobrança (qualquer usuário logado) */}
-            <Route
-              path="/cadastrarproduto"
-              element={
-                <RotaProtegida>
-                  <FormProduto />
-                </RotaProtegida>
-              }
-            />
+              {/* Cadastrar cobrança (qualquer usuário logado) */}
+              <Route
+                path="/cadastrarproduto"
+                element={
+                  <RotaProtegida>
+                    <FormProduto />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Editar cobrança (somente admin) */}
-            <Route
-              path="/editarproduto/:id"
-              element={
-                <RotaAdmin>
-                  <FormProduto />
-                </RotaAdmin>
-              }
-            />
+              {/* Editar cobrança (somente admin) */}
+              <Route
+                path="/editarproduto/:id"
+                element={
+                  <RotaAdmin>
+                    <FormProduto />
+                  </RotaAdmin>
+                }
+              />
 
-            {/* Deletar cobrança (somente admin) */}
-            <Route
-              path="/deletarproduto/:id"
-              element={
-                <RotaAdmin>
-                  <DeletarProduto />
-                </RotaAdmin>
-              }
-            />
+              {/* Deletar cobrança (somente admin) */}
+              <Route
+                path="/deletarproduto/:id"
+                element={
+                  <RotaAdmin>
+                    <DeletarProduto />
+                  </RotaAdmin>
+                }
+              />
 
-            {/* Lista de categorias (autenticado) */}
-            <Route
-              path="/categorias"
-              element={
-                <RotaProtegida>
-                  <ListaCategoria />
-                </RotaProtegida>
-              }
-            />
+              {/* Lista de categorias (autenticado) */}
+              <Route
+                path="/categorias"
+                element={
+                  <RotaProtegida>
+                    <ListaCategoria />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Cadastrar categoria (qualquer usuário logado) */}
-            <Route
-              path="/cadastrarcategoria"
-              element={
-                <RotaProtegida>
-                  <FormCategoria />
-                </RotaProtegida>
-              }
-            />
+              {/* Cadastrar categoria (qualquer usuário logado) */}
+              <Route
+                path="/cadastrarcategoria"
+                element={
+                  <RotaProtegida>
+                    <FormCategoria />
+                  </RotaProtegida>
+                }
+              />
 
-            {/* Deletar categoria (somente admin) */}
-            <Route
-              path="/deletarcategoria/:id"
-              element={
-                <RotaAdmin>
-                  <DeletarCategoria />
-                </RotaAdmin>
-              }
-            />
+              {/* Deletar categoria (somente admin) */}
+              <Route
+                path="/deletarcategoria/:id"
+                element={
+                  <RotaAdmin>
+                    <DeletarCategoria />
+                  </RotaAdmin>
+                }
+              />
 
-            {/* Editar categoria (somente admin) */}
-            <Route
-              path="/editarcategoria/:id"
-              element={
-                <RotaAdmin>
-                  <FormCategoria />
-                </RotaAdmin>
-              }
-            />
+              {/* Editar categoria (somente admin) */}
+              <Route
+                path="/editarcategoria/:id"
+                element={
+                  <RotaAdmin>
+                    <FormCategoria />
+                  </RotaAdmin>
+                }
+              />
 
             {/* Ver o próprio perfil (qualquer usuário logado) */}
             <Route
@@ -169,14 +170,14 @@ function App() {
             />
 
 
-          </Routes>
+            </Routes>
+          </main>
+
+          <Footer />
         </div>
-
-        <Footer />
-
       </BrowserRouter>
     </>
   );
 }
 
-export default App;
+export default App

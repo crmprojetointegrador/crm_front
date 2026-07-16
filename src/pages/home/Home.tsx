@@ -6,7 +6,8 @@ function Home() {
       <div style={{
         background: 'linear-gradient(to right, #a717eb, #00e8ff)',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        minHeight: "calc(100vh - 64px)"
       }}
       >
         <div style={{
