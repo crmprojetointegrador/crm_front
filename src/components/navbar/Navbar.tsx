@@ -11,6 +11,8 @@ function Navbar() {
     const [menuAberto, setMenuAberto] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
+    const isAdmin = usuario.tipo?.toLowerCase() === "admin";
+
     useEffect(() => {
         function fecharAoClicarFora(e: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -42,9 +44,15 @@ function Navbar() {
                 <Link to='/home' className="text-5xl font-bold">InteliCob</Link>
 
                 <div className='flex gap-6 items-center'>
+
+
                     <Link to='/categorias' className='hover:underline'>Categorias</Link>
 
                     <Link to='/produtos' className='hover:underline'>Produto</Link>
+
+                    {isAdmin && (
+                        <Link to='/usuarios' className='hover:underline'>Usuários</Link>
+                    )}
 
                     <Link to='/about' className='hover:underline'>Sobre nós</Link>
 

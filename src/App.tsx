@@ -22,6 +22,8 @@ import DeletarCategoria from "./components/categoria/deletarcategoria/DeletarCat
 import FormPerfil from "./components/perfil/formperfil/FormPerfil";
 import DeletarPerfil from "./components/perfil/deletarperfil/DeletarPerfil";
 import Perfil from "./components/perfil/Perfil";
+import ListarUsuarios from "./components/usuario/listarusuario/ListarUsuario";
+
 
 function App() {
   return (
@@ -165,6 +167,16 @@ function App() {
                 <RotaProtegida>
                   <DeletarPerfil />
                 </RotaProtegida>
+              }
+            />
+
+            {/* Lista de usuários comuns (somente admin) */}
+            <Route
+              path="/usuarios"
+              element={
+                <RotaAdmin>
+                  <ListarUsuarios />
+                </RotaAdmin>
               }
             />
 
