@@ -206,7 +206,7 @@ function FormProduto() {
     function formatarCPF(cpf: string): string {
         if (!cpf || cpf.length !== 11) return cpf; // Verifica se o CPF é válido
         return `${cpf.slice(0, 3)}.***.***-${cpf.slice(-2)}`;
-      }
+    }
 
     return (
         <div className='container mx-auto px-4 py-8'>
@@ -223,7 +223,7 @@ function FormProduto() {
                         <p className="text-sm text-red-600 text-center">{erro}</p>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="nome" className="text-sm font-medium text-gray-700">
                                 Parcela
@@ -271,7 +271,7 @@ function FormProduto() {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="status" className="text-sm font-medium text-gray-700">
                                 Status
