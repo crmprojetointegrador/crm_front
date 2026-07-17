@@ -34,14 +34,6 @@ const integrantes = [
         linkedin: 'https://linkedin.com/in/souflame/',
         foto: '/src/assets/PerfilFlame.jpg',
     },
-    {
-        id: 5,
-        nome: 'Milena Fernandes',
-        cargo: 'Desenvolvedora Full Stack',
-        github: 'https://github.com/MiFlow8',
-        linkedin: 'https://linkedin.com/in/milenafernandessilva/',
-        foto: '/src/assets/PerfilMilena.jpg',
-    },
 ];
 
 function About() {
@@ -54,7 +46,7 @@ function About() {
                 Conheça a equipe por trás deste projeto. Somos um grupo de desenvolvedoras apaixonadas por resolver problemas.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {integrantes.map((integrante) => (
                     <AboutCard
                         key={integrante.id}
