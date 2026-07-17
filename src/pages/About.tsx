@@ -1,4 +1,8 @@
 import AboutCard from '../components/AboutCard';
+import fotoAlanis from '../assets/PerfilAlanis.jpg';
+import fotoBruna from '../assets/PerfilBruna.jpg';
+import fotoEliane from '../assets/PerfilEliane.jpg';
+import fotoFlame from '../assets/PerfilFlame.jpg';
 
 // Dados das integrantes
 const integrantes = [
@@ -8,7 +12,7 @@ const integrantes = [
         cargo: 'Desenvolvedora Full Stack',
         github: 'https://github.com/alanis-santos',
         linkedin: 'https://linkedin.com/in/devalanissantos/',
-        foto: '/src/assets/PerfilAlanis.jpg',
+        foto: fotoAlanis,
     },
     {
         id: 2,
@@ -16,7 +20,7 @@ const integrantes = [
         cargo: 'Desenvolvedora Full Stack',
         github: 'https://github.com/bruna-dsmendes',
         linkedin: 'https://linkedin.com/in/devbrunamendes/',
-        foto: '/src/assets/PerfilBruna.jpg',
+        foto: fotoBruna,
     },
     {
         id: 3,
@@ -24,7 +28,7 @@ const integrantes = [
         cargo: 'Desenvolvedora Full Stack',
         github: 'https://github.com/Eliane-orlandin',
         linkedin: 'https://linkedin.com/in/elianeorlandindocarmo/',
-        foto: '/src/assets/PerfilEliane.jpg',
+        foto: fotoEliane,
     },
     {
         id: 4,
@@ -32,7 +36,7 @@ const integrantes = [
         cargo: 'Desenvolvedora Full Stack',
         github: 'https://github.com/PraFlame',
         linkedin: 'https://linkedin.com/in/souflame/',
-        foto: '/src/assets/PerfilFlame.jpg',
+        foto: fotoFlame,
     },
 ];
 
