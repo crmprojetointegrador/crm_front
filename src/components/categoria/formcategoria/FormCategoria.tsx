@@ -58,9 +58,15 @@ function FormCategoria() {
         e.preventDefault()
         setIsLoading(true)
 
+        const categoriaAtualizada = {
+            id: categoria.id,
+            nome: categoria.nome,
+            descricao: categoria.descricao
+        }
+
         if (id !== undefined) {
             try {
-                await atualizar(`/categorias`, categoria, setCategoria, {
+                await atualizar(`/categorias`, categoriaAtualizada, setCategoria, {
                     headers: { 'Authorization': token }
                 })
                 alert('O Categoria foi atualizado com sucesso!')
@@ -74,7 +80,7 @@ function FormCategoria() {
             }
         } else {
             try {
-                await cadastrar(`/categorias`, categoria, setCategoria, {
+                await cadastrar(`/categorias`, categoriaAtualizada, setCategoria, {
                     headers: { 'Authorization': token }
                 })
                 alert('O Categoria foi cadastrado com sucesso!')
