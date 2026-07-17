@@ -24,6 +24,10 @@ function ListarProdutos() {
     const token = usuario.token;
     const isAdmin = usuario.tipo?.trim().toLowerCase() === "admin";
 
+    // Paginação
+    const [paginaAtual, setPaginaAtual] = useState<number>(1);
+    const ITENS_POR_PAGINA = 8;
+
     useEffect(() => {
         if (token === '') {
             alert('Você precisa estar logado!');
@@ -62,6 +66,10 @@ function ListarProdutos() {
             // Falha silenciosa se houver erro ao carregar categorias
         }
     }
+    // Mudanças de paginação, resetando a página
+    useEffect(() => {
+        setPaginaAtual(1);
+    }, [statusFiltro, categoriaFiltro, cpfFiltro, userIdFiltro]);
 
     const produtosFiltrados = produtos.filter((produto) => {
         // Se não for admin, só exibe as cobranças do próprio usuário
@@ -85,6 +93,18 @@ function ListarProdutos() {
 
         return matchStatus && matchCategoria && matchCpf && matchUserId;
     });
+
+    // Paginação
+    const totalPaginas = Math.ceil(produtosFiltrados.length / ITENS_POR_PAGINA);
+    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+    const fim = inicio + ITENS_POR_PAGINA;
+    const produtosPaginados = produtosFiltrados.slice(inicio, fim);
+
+    function irParaPagina(pagina: number) {
+        if (pagina >= 1 && pagina <= totalPaginas) {
+            setPaginaAtual(pagina);
+        }
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -156,17 +176,70 @@ function ListarProdutos() {
                 </p>
             )}
 
-            {(isLoading || produtosFiltrados.length > 0) && (
-                <div className="grid grid-cols-1 gap-4">
-                    <CardProduto
-                        produtos={produtosFiltrados}
-                        loading={isLoading}
-                    />
-                </div>
+            {/* Paginando*/}
+
+             {(isLoading || produtosPaginados.length > 0) && (
+                <>
+                    <div className="grid grid-cols-1 gap-4">
+                        <CardProduto
+                            produtos={produtosPaginados}
+                            loading={isLoading}
+                        />
+                    </div>
+
+                    
+                    {!isLoading && totalPaginas > 1 && (
+                        <div className="flex justify-center items-center gap-2 mt-6">
+                            <button
+                                onClick={() => irParaPagina(paginaAtual - 1)}
+                                disabled={paginaAtual === 1}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                    paginaAtual === 1
+                                        ? 'text-gray-400 cursor-not-allowed'
+                                        : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                                }`}
+                            >
+                                Anterior
+                            </button>
+
+                            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((pagina) => (
+                                <button
+                                    key={pagina}
+                                    onClick={() => irParaPagina(pagina)}
+                                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                        pagina === paginaAtual
+                                            ? 'bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white'
+                                            : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                                    }`}
+                                >
+                                    {pagina}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => irParaPagina(paginaAtual + 1)}
+                                disabled={paginaAtual === totalPaginas}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                    paginaAtual === totalPaginas
+                                        ? 'text-gray-400 cursor-not-allowed'
+                                        : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                                }`}
+                            >
+                                Próximo
+                            </button>
+                        </div>
+                    )}
+
+                    
+                    {!isLoading && produtosFiltrados.length > 0 && (
+                        <p className="text-center text-sm text-gray-500 mt-4">
+                            Mostrando {produtosPaginados.length} de {produtosFiltrados.length} cobrança(s)
+                        </p>
+                    )}
+                </>
             )}
         </div>
     );
-
 }
 
 export default ListarProdutos;
