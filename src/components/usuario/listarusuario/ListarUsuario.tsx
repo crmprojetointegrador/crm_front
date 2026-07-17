@@ -19,6 +19,9 @@ function ListarUsuarios() {
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
+  //Pagina
+  const [paginaAtual, setPaginaAtual] = useState<number>(1);
+  const ITENS_POR_PAGINA = 8;
 
   useEffect(() => {
     if (token === '') {
@@ -57,6 +60,10 @@ function ListarUsuarios() {
     } catch (error: any) {
     }
   }
+  //Pagina
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [busca]);
 
   const termo = busca.trim().toLowerCase();
 
@@ -67,6 +74,20 @@ function ListarUsuarios() {
       u.nome.toLowerCase().includes(termo) ||
       u.cpf?.toLowerCase().includes(termo)
     );
+
+  //Pagina também
+
+  const totalPaginas = Math.ceil(usuariosVisiveis.length / ITENS_POR_PAGINA);
+  const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+  const fim = inicio + ITENS_POR_PAGINA;
+  const usuariosPaginados = usuariosVisiveis.slice(inicio, fim);
+
+  function irParaPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= totalPaginas) {
+      setPaginaAtual(pagina);
+    }
+  }
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -98,9 +119,63 @@ function ListarUsuarios() {
           {busca ? "Nenhum usuário encontrado com esse termo." : "Nenhum usuário cadastrado ainda."}
         </p>
       )}
+      {/*Paginando real*/}
+      {(isLoading || usuariosPaginados.length > 0) && (
+        <>
+          <CardUsuario
+            usuarios={usuariosPaginados}
+            produtos={produtos}
+            loading={isLoading}
+          />
 
-      {(isLoading || usuariosVisiveis.length > 0) && (
-        <CardUsuario usuarios={usuariosVisiveis} produtos={produtos} loading={isLoading} />
+          {!isLoading && totalPaginas > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-6">
+              <button
+                onClick={() => irParaPagina(paginaAtual - 1)}
+                disabled={paginaAtual === 1}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  paginaAtual === 1
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                }`}
+              >
+                Anterior
+              </button>
+
+              {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((pagina) => (
+                <button
+                  key={pagina}
+                  onClick={() => irParaPagina(pagina)}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    pagina === paginaAtual
+                      ? 'bg-gradient-to-r from-[#a717eb] to-[#00e8ff] text-white'
+                      : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                  }`}
+                >
+                  {pagina}
+                </button>
+              ))}
+
+              <button
+                onClick={() => irParaPagina(paginaAtual + 1)}
+                disabled={paginaAtual === totalPaginas}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  paginaAtual === totalPaginas
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
+                }`}
+              >
+                Próximo
+              </button>
+            </div>
+          )}
+
+          {!isLoading && usuariosVisiveis.length > 0 && (
+            <p className="text-center text-sm text-gray-500 mt-4">
+              Mostrando {usuariosPaginados.length} de {usuariosVisiveis.length} usuário(s)
+            </p>
+          )}
+        </>
       )}
 
       <ModalCadastrarUsuario
