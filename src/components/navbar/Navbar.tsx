@@ -12,7 +12,6 @@ function Navbar() {
     const [menuAberto, setMenuAberto] = useState(false);
     const [menuMobileAberto, setMenuMobileAberto] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const token = usuario.token
 
     const isAdmin = usuario.tipo?.toLowerCase() === "admin";
 
