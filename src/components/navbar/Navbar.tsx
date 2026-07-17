@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { FiMenu, FiX } from "react-icons/fi"
 import { AuthContext } from "../../contexts/AuthContext"
 import { ToastAlerta } from "../../utils/ToastAlerta"
 
@@ -9,6 +10,7 @@ function Navbar() {
     const { usuario, handleLogout } = useContext(AuthContext);
 
     const [menuAberto, setMenuAberto] = useState(false);
+    const [menuMobileAberto, setMenuMobileAberto] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const token = usuario.token
 
@@ -25,8 +27,15 @@ function Navbar() {
         return () => document.removeEventListener("mousedown", fecharAoClicarFora);
     }, []);
 
+    // Trava o scroll da página por trás enquanto o menu mobile está sobreposto
+    useEffect(() => {
+        document.body.style.overflow = menuMobileAberto ? "hidden" : "";
+        return () => { document.body.style.overflow = ""; };
+    }, [menuMobileAberto]);
+
     function logout() {
         setMenuAberto(false);
+        setMenuMobileAberto(false);
         handleLogout();
         ToastAlerta('O Usuário foi desconectado com sucesso!', 'info')
         navigate("/");
@@ -34,16 +43,17 @@ function Navbar() {
 
     function irPara(caminho: string) {
         setMenuAberto(false);
+        setMenuMobileAberto(false);
         navigate(caminho);
     }
 
     return (
-        <div className=" w-full bg-gradient-to-r from-[#a717eb] to-[#00e8ff] flex-col items-center px-8 py-4">
+        <div className="relative w-full bg-gradient-to-r from-[#a717eb] to-[#00e8ff] flex-col items-center px-4 sm:px-8 py-4">
             <h1 className="text-white text-2xl font-bold"></h1>
 
-            <div className="w-full flex justify-between">
+            <div className="w-full flex justify-between items-center">
                 <Link to='/home'>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" className="h-16 w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" className="h-11 sm:h-16 w-auto">
                         <defs>
                             <linearGradient id="intelio-grad" x1="0%" y1="100%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="#FFFFFF" />
@@ -72,7 +82,8 @@ function Navbar() {
                     </svg>
                 </Link>
 
-                <div className='flex gap-6 items-center'>
+                {/* Links normais — só aparecem a partir de telas médias (tablet/desktop) */}
+                <div className='hidden md:flex gap-6 items-center'>
 
                     {usuario.token !== "" ? (
                         <>
@@ -125,7 +136,81 @@ function Navbar() {
                         <Link to='/login' className='hover:underline text-fuchsia-950'>Login</Link>
                     )}
                 </div>
+
+                {/* Botão hambúrguer — só aparece em telas pequenas */}
+                <button
+                    onClick={() => setMenuMobileAberto(true)}
+                    className="md:hidden text-white p-1"
+                    aria-label="Abrir menu"
+                >
+                    <FiMenu size={28} />
+                </button>
             </div>
+
+            {menuMobileAberto && (
+                <div className="fixed inset-0 z-50 md:hidden">
+                    <div
+                        className="absolute inset-0 bg-black/50"
+                        onClick={() => setMenuMobileAberto(false)}
+                    />
+
+                    <div className="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-white shadow-xl flex flex-col">
+                        <div className="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-[#a717eb] to-[#00e8ff]">
+                            <span className="text-white font-semibold">
+                                {usuario.token !== "" ? `Olá, ${usuario.nome}` : "Menu"}
+                            </span>
+                            <button
+                                onClick={() => setMenuMobileAberto(false)}
+                                className="text-white p-1"
+                                aria-label="Fechar menu"
+                            >
+                                <FiX size={26} />
+                            </button>
+                        </div>
+
+                        <nav className="flex flex-col py-2 overflow-y-auto">
+                            {usuario.token !== "" ? (
+                                <>
+                                    <button onClick={() => irPara('/categorias')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 border-b border-gray-100">
+                                        Categorias
+                                    </button>
+                                    <button onClick={() => irPara('/produtos')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 border-b border-gray-100">
+                                        Cobranças
+                                    </button>
+                                </>
+                            ) : null}
+
+                            {isAdmin && (
+                                <button onClick={() => irPara('/usuarios')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 border-b border-gray-100">
+                                    Usuários
+                                </button>
+                            )}
+
+                            <button onClick={() => irPara('/about')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 border-b border-gray-100">
+                                Sobre nós
+                            </button>
+
+                            {usuario.token !== "" ? (
+                                <>
+                                    <button onClick={() => irPara('/editarperfil')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 border-b border-gray-100">
+                                        Editar perfil
+                                    </button>
+                                    <button onClick={() => irPara('/deletarperfil')} className="text-left px-5 py-3 text-red-600 hover:bg-red-50 border-b border-gray-100">
+                                        Deletar conta
+                                    </button>
+                                    <button onClick={logout} className="text-left px-5 py-3 text-gray-800 hover:bg-gray-50 font-medium">
+                                        Sair
+                                    </button>
+                                </>
+                            ) : (
+                                <button onClick={() => irPara('/login')} className="text-left px-5 py-3 text-gray-800 hover:bg-purple-50 font-medium">
+                                    Login
+                                </button>
+                            )}
+                        </nav>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
