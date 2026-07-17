@@ -37,19 +37,29 @@ Esse é o repositório do **front-end** — a cara do sistema. Ele conversa com 
 
 O principal objetivo do InteliCob é centralizar e otimizar o fluxo de trabalho de uma equipe de cobrança: acompanhar dívidas em aberto, organizá-las por categoria e responsável, e dar visibilidade diferente pra quem administra o sistema e pra quem opera no dia a dia — sem depender de planilhas soltas.
 
+### 👤 Personas
+
+- **Administrador (`admin`)**: gerencia todo o cadastro de dívidas e categorias, com poder de edição/exclusão sobre os dados de qualquer usuário.
+- **Usuário comum (`user`)**: consulta e cadastra registros, mas não pode alterar ou excluir dados de terceiros — só enxerga e mantém as cobranças atribuídas a si mesmo.
+
 ---
 
 ## 🔥 O que já dá pra fazer
 
 | | |
 |---|---|
-| 🔐 | Login e cadastro com controle de sessão persistente |
+| 🔐 | Login (JWT) e cadastro de conta, com sessão persistente |
 | 👑 | Dois perfis de acesso — **Admin** e **User** — cada um vendo só o que faz sentido pra ele |
-| 💰 | Cadastro completo de cobranças: valor, status, categoria e responsável |
-| 🔎 | Filtros de busca por status, categoria, CPF e usuário |
-| 🗂️ | Gestão de categorias de dívida |
-| 🙋 | Perfil próprio editável |
-| 👥 | Painel de usuários (visão exclusiva do admin) |
+| 💰 | CRUD completo de cobranças (Produtos): nome, valor do débito, data, status, categoria e responsável |
+| 🚦 | Status de cobrança: `Pago`, `Em acordo`, `Em atraso` ou `Sem negociação` |
+| 🔎 | Filtros de busca por status, categoria, CPF e ID de usuário |
+| 🗂️ | CRUD completo de categorias de dívida (nome e descrição) |
+| 🙋 | Visualização e edição do próprio perfil |
+| 🧾 | Exclusão da própria conta — **bloqueada automaticamente se houver cobranças vinculadas ao usuário**, evitando que dívidas sejam apagadas junto |
+| 👥 | Painel de usuários (visão exclusiva do admin), com busca por nome/CPF e detalhamento das cobranças de cada um |
+| ℹ️ | Página institucional "Sobre nós" com a apresentação da equipe |
+| 🔔 | Notificações (toast) de sucesso/erro em todas as ações de CRUD |
+| 📱 | Interface totalmente responsiva: tabelas de listagem (usuários, cobranças, categorias) viram cards empilhados no celular, e formulários se ajustam para telas pequenas |
 
 ---
 
@@ -61,6 +71,16 @@ Estilo      →  Tailwind CSS 4
 Rotas       →  React Router DOM 7
 HTTP        →  Axios
 UX extra    →  React Toastify · React Spinners · React Icons
+```
+
+Esse front conversa com um backend próprio ([`projeto-integrador`](../projeto-integrador)), construído em:
+
+```
+API          →  Java 17 + Spring Boot 3.5.14 + Spring Data JPA
+Segurança    →  Spring Security + JWT (jjwt 0.12.6)
+Banco        →  MySQL / MariaDB via Hibernate
+Docs de API  →  Swagger / OpenAPI 3
+Deploy       →  Docker, com perfis dev/prod separados
 ```
 
 ---
@@ -93,15 +113,47 @@ src/
 
 ---
 
+## 🗺️ Mapa de rotas
+
+| Rota | Componente | Proteção |
+|---|---|---|
+| `/` | Home | pública |
+| `/login` | Login | pública |
+| `/cadastro` | Cadastro | pública |
+| `/about` | About | pública |
+| `/produtos` | ListarProdutos | autenticado |
+| `/cadastrarproduto` | FormProduto | autenticado |
+| `/editarproduto/:id` | FormProduto | admin |
+| `/deletarproduto/:id` | DeletarProduto | admin |
+| `/categorias` | ListaCategoria | autenticado |
+| `/cadastrarcategoria` | FormCategoria | autenticado |
+| `/editarcategoria/:id` | FormCategoria | admin |
+| `/deletarcategoria/:id` | DeletarCategoria | admin |
+| `/usuarios` | ListarUsuarios | admin |
+| `/perfil` | Perfil | autenticado |
+| `/editarperfil` | FormPerfil | autenticado |
+| `/deletarperfil` | DeletarPerfil | autenticado |
+
+---
+
 ## 🔐 Como funciona o controle de acesso
 
 A API de login não devolve o tipo do usuário — então, logo depois de autenticar, o front faz uma segunda chamada pra descobrir se quem entrou é `admin` ou `user`. A partir daí:
 
+- `RotaProtegida` exige apenas que exista um usuário autenticado (token válido).
+- `RotaAdmin` exige, além do login, que o `tipo` do usuário seja `admin`.
 - Rotas de editar/excluir cobrança, categoria e a lista de usuários exigem admin.
 - Cards de listagem só mostram ações de editar/deletar pra quem tem permissão.
 - Um `user` comum só vê as cobranças atribuídas a ele mesmo.
 
-> Vale lembrar: isso protege a **interface**. A validação completa de papéis também precisa existir do lado da API.
+### 🧾 Proteção contra exclusão de usuário com dívidas em aberto
+
+Antes de permitir que alguém apague a própria conta, o front busca todas as cobranças (`/produtos`) e verifica se existe alguma vinculada a esse usuário:
+
+- **Se houver cobranças vinculadas**, a exclusão fica bloqueada — o botão de confirmação é desabilitado e uma mensagem explica que é preciso remover ou transferir as dívidas pendentes antes.
+- **Se não houver nenhuma**, a exclusão segue normalmente.
+
+> Vale lembrar: tudo isso protege a **interface**. A validação completa de papéis — e a trava de exclusão com dívidas vinculadas — também precisa existir do lado da API (veja em "Próximos passos").
 
 ---
 
@@ -153,6 +205,9 @@ Antes de rodar o projeto localmente, certifique-se de que possui:
 
 Ideias no radar pra evoluir o projeto, organizadas por frente:
 
+### 📄 Listagens e performance
+- **Paginação na página de Cobranças (Produtos)**: hoje a listagem carrega todos os registros de uma vez, o que não escala bem com grandes volumes de dívidas — a paginação vai trazer os dados em blocos, melhorando o tempo de carregamento e a experiência de navegação.
+
 ### 🏛️ Papéis e governança
 - **Atendente/Backoffice**: cadastra a dívida e registra os contatos, mas não altera status sozinho.
 - **Admin**: aprova mudanças de status, gerencia usuários, vê tudo.
@@ -168,6 +223,7 @@ Ideias no radar pra evoluir o projeto, organizadas por frente:
 ### 🗄️ Estruturação de backend
 - Trazer a entidade **Cliente** para a estrutura principal do projeto (hoje existe apenas em uma branch de testes, nunca chegou a ser integrada) — é o que falta para separar de fato quem é o devedor de quem opera o CRM.
 - Registro de informações de contato vinculado ao Cliente (telefone, e-mail, endereço, histórico de interações), servindo de base para o painel de relacionamento citado acima.
+- **Bloquear no backend a exclusão de um usuário que possua cobranças (Produtos) vinculadas** — hoje o relacionamento Usuario 1:N Produto permite apagar o usuário e perder as dívidas junto; o front já bloqueia essa ação na tela de exclusão de conta, mas essa regra precisa existir também na API (endpoint de exclusão de usuário), para não depender só da validação client-side.
 
 ### 📞 Relacionamento com o cliente
 - Timeline de interações: ligação, e-mail, WhatsApp, com resultado de cada uma ("sem resposta", "prometeu pagar dia X", "recusou acordo").
