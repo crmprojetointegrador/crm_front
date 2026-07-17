@@ -2,7 +2,7 @@
 
 # 💜 InteliCob
 
-### Organização inteligente de passivos
+### Organização inteligente de ativos
 
 *Um CRM de cobrança feito para transformar planilhas soltas em controle de verdade.*
 
