@@ -5,6 +5,11 @@ interface CardPerfilProps {
   perfil: Usuario;
 }
 
+function formatarCpf(cpf: string): string {
+  if (!cpf || cpf.length !== 11) return cpf; // Retorna o CPF original se não for válido
+  return `${cpf.slice(0, 3)}.***.***-${cpf.slice(-2)}`; // Formata o CPF no padrão desejado
+}
+
 function CardPerfil({ perfil }: CardPerfilProps) {
 
   return (
@@ -18,7 +23,7 @@ function CardPerfil({ perfil }: CardPerfilProps) {
       </div>
 
       <p className="text-gray-600">
-        <strong>CPF:</strong> {perfil.cpf}
+      <strong>CPF:</strong> {formatarCpf(perfil.cpf)}
       </p>
 
       <p className="text-gray-600">

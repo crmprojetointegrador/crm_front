@@ -4,6 +4,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type { Usuario } from "../../../models/Usuario";
 import { atualizar, buscar } from "../../../services/Service";
 import { ClipLoader } from "react-spinners";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function FormPerfil() {
 
@@ -18,6 +19,10 @@ function FormPerfil() {
     senha: '',
     tipo: ''
   })
+
+  const [cpfVisivel, setCpfVisivel] = useState(false);
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
+  const [confirmarSenhaVisivel, setConfirmarSenhaVisivel] = useState(false);
 
   const [confirmarSenha, setConfirmarSenha] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -99,6 +104,14 @@ function FormPerfil() {
     setIsLoading(false)
   }
 
+  function formatarCpf(cpf: string): string {
+    if (!cpf || cpf.length !== 11) return cpf;
+    if (cpfVisivel) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+    return `${cpf.slice(0, 3)}.***.***-${cpf.slice(-2)}`;
+}
+
   return (
     <div className="flex justify-center items-center py-16 px-4">
       <form
@@ -124,18 +137,28 @@ function FormPerfil() {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 relative">
           <label htmlFor="cpf" className="text-sm font-medium text-gray-700">CPF</label>
-          <input
-            id="cpf"
-            name="cpf"
-            type="text"
-            inputMode="numeric"
-            autoComplete="off"
-            value={perfil.cpf}
-            onChange={atualizarEstado}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
+          <div className="relative">
+            <input
+              id="cpf"
+              name="cpf"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              value={formatarCpf(perfil.cpf)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
+              readOnly
+              className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+            />
+            <button
+              type="button"
+              onClick={() => setCpfVisivel(!cpfVisivel)}
+              className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {cpfVisivel ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -164,31 +187,50 @@ function FormPerfil() {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="senha" className="text-sm font-medium text-gray-700">Senha</label>
+        <div className="flex flex-col gap-1 relative">
+          <label htmlFor="senha" className="text-sm font-medium text-gray-700">Atualizar Senha</label>
+          <div className="relative">
           <input
             id="senha"
             name="senha"
-            type="password"
+            type={senhaVisivel ? "text" : "password"}
             autoComplete="new-password"
-            placeholder="Digite para confirmar as alterações"
             value={perfil.senha}
             onChange={atualizarEstado}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
           />
+            <button
+              type="button"
+              onClick={() => setSenhaVisivel(!senhaVisivel)}
+              className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {senhaVisivel ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+          </div>
+   
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 relative">
           <label htmlFor="confirmarSenha" className="text-sm font-medium text-gray-700">Confirmar Senha</label>
+          <div className="relative">
           <input
             id="confirmarSenha"
             name="confirmarSenha"
-            type="password"
+            type={confirmarSenhaVisivel ? "text" : "password"}
             autoComplete="new-password"
             value={confirmarSenha}
             onChange={handleConfirmarSenha}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
           />
+           <button
+              type="button"
+              onClick={() => setConfirmarSenhaVisivel(!confirmarSenhaVisivel)}
+              className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {confirmarSenhaVisivel ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+          </div>
+  
         </div>
 
         <div className="flex gap-3 mt-2">
