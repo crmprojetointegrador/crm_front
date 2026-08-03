@@ -6,48 +6,45 @@ function Home() {
   return (
 
     <div
-      className="relative flex justify-center min-h-[calc(100vh-64px)]"
-      style={{
-        background: 'linear-gradient(to right, #a717eb, #00e8ff)',
-      }}
+      className="relative flex justify-center min-h-[calc(100vh-64px)] bg-[#FFF8ED]"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full max-w-7xl px-8 py-16 gap-12 text-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full max-w-7xl px-8 py-16 gap-12 text-gray-900">
         <div className="flex flex-col gap-6">
-          <span className="inline-block w-fit text-xs font-semibold uppercase tracking-[0.2em] text-white border border-white/30 rounded-full px-4 py-1.5">
+          <span className="inline-block w-fit text-xs font-semibold uppercase tracking-[0.2em] text-[#a717eb] border border-[#a717eb]/30 rounded-full px-4 py-1.5">
             CRM de Cobrança
           </span>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
             Olá {usuario?.nome || ""},<br />
-            <span className="bg-gradient-to-r from-white to-[#00e8ff] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#a717eb] to-[#00e8ff] bg-clip-text text-transparent">
               bem-vindo ao
             </span><br />
             InteliCob
           </h1>
-          <p className="text-lg text-white/85 max-w-md">
+          <p className="text-lg text-gray-600 max-w-md">
             Onde organizar as finanças é simples e rápido.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
             <Link
               to="/cadastrarproduto"
-              className="rounded-md text-white font-semibold border border-white/30 px-6 py-3 hover:bg-white hover:text-[#7a12b0] transition-colors"
+              className="rounded-md text-[#a717eb] font-semibold bg-transparent border border-[#a717eb] px-6 py-3 hover:bg-[#a717eb] hover:text-white transition-colors"
             >
               Nova Cobrança
             </Link>
             <Link
               to="/produtos"
-              className="rounded-md border border-white/30 text-white font-medium px-6 py-3 hover:bg-white/10 transition-colors"
+              className="rounded-md border border-gray-300 text-gray-900 font-medium px-6 py-3 hover:bg-gray-100 transition-colors"
             >
               Ver Cobranças
             </Link>
           </div>
-          <div className="flex gap-8 pt-8 border-t border-white/20 mt-4">
+          <div className="flex gap-8 pt-8 border-t border-gray-200 mt-4">
             <div>
-              <p className="text-2xl font-bold text-white">+80%</p>
-              <p className="text-sm text-white/70">Eficiência na recuperação</p>
+              <p className="text-2xl font-bold text-gray-900">+80%</p>
+              <p className="text-sm text-gray-500">Eficiência na recuperação</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">100%</p>
-              <p className="text-sm text-white/70">Organização digital</p>
+              <p className="text-2xl font-bold text-gray-900">100%</p>
+              <p className="text-sm text-gray-500">Organização digital</p>
             </div>
           </div>
         </div>
@@ -72,8 +69,8 @@ function Home() {
                 fill="none" />
             </g>
 
-            <text x="210" y="112" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" letter-spacing="-0.5">
-              Inteli<tspan fill="#00e8ff">Cob</tspan>
+            <text x="210" y="112" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="56" font-weight="900" fill="#1f2937" letter-spacing="-0.5">
+              Inteli<tspan fill="#00b8d4">Cob</tspan>
             </text>
 
             <text x="214" y="145" font-family="'Segoe UI', Roboto, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#a717eb" letter-spacing="4.5">
