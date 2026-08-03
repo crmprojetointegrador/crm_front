@@ -6,7 +6,7 @@ function Home() {
   return (
 
     <div
-      className="relative flex justify-center min-h-[calc(100vh-64px)] bg-[#FFF8ED]"
+      className="relative flex justify-center min-h-[calc(100vh-64px)] bg-white"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full max-w-7xl px-8 py-16 gap-12 text-gray-900">
         <div className="flex flex-col gap-6">
