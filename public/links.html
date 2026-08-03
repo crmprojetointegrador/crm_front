@@ -15,7 +15,7 @@
     body {
       min-height: 100vh;
       font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-      background: #ffffff;
+      background: linear-gradient(160deg, #a717eb 0%, #7a12b0 45%, #00c2e0 100%);
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -35,10 +35,10 @@
       height: 92px;
       border-radius: 50%;
       background: #ffffff;
-      border: 2px solid #a717eb;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
       margin-bottom: 18px;
     }
 
@@ -48,18 +48,18 @@
     }
 
     .name {
-      color: #1f1147;
+      color: #ffffff;
       font-size: 25px;
       font-weight: 800;
       letter-spacing: -0.3px;
     }
 
     .name span {
-      color: #00a7c2;
+      color: #d6faff;
     }
 
     .tagline {
-      color: #5b5568;
+      color: rgba(255, 255, 255, 0.85);
       font-size: 14px;
       text-align: center;
       margin-top: 6px;
@@ -73,21 +73,19 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 16px 20px;
+      padding: 17px 20px;
       border-radius: 999px;
       background: #ffffff;
-      border: 2px solid #a717eb;
       color: #7a12b0;
       font-size: 15px;
       font-weight: 700;
       text-decoration: none;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.15s ease;
       margin-bottom: 14px;
     }
 
     .project-btn:hover {
-      background: #a717eb;
-      color: #ffffff;
       transform: translateY(-2px);
     }
 
@@ -103,21 +101,22 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 14px 20px;
+      padding: 15px 20px;
       border-radius: 999px;
-      background: #ffffff;
-      border: 2px solid #a717eb;
-      color: #7a12b0;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.55);
+      color: #ffffff;
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
+      backdrop-filter: blur(6px);
       transition: background 0.2s ease, transform 0.15s ease, color 0.2s ease;
       margin-bottom: 36px;
     }
 
     .link-btn:hover {
-      background: #a717eb;
-      color: #ffffff;
+      background: #ffffff;
+      color: #7a12b0;
       transform: translateY(-2px);
     }
 
@@ -129,7 +128,7 @@
 
     .section-label {
       align-self: flex-start;
-      color: #8a84a0;
+      color: rgba(255, 255, 255, 0.75);
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
@@ -146,14 +145,15 @@
 
     .member-card {
       width: 100%;
-      background: #ffffff;
-      border: 1.5px solid #e4ddf5;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
       border-radius: 18px;
       padding: 16px 18px;
+      backdrop-filter: blur(6px);
     }
 
     .member-name {
-      color: #1f1147;
+      color: #ffffff;
       font-size: 15px;
       font-weight: 700;
       margin-bottom: 10px;
@@ -172,9 +172,9 @@
       gap: 8px;
       padding: 10px 12px;
       border-radius: 999px;
-      background: #ffffff;
-      border: 1.5px solid #a717eb;
-      color: #7a12b0;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
+      color: #ffffff;
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
@@ -182,8 +182,8 @@
     }
 
     .member-links a:hover {
-      background: #a717eb;
-      color: #ffffff;
+      background: #ffffff;
+      color: #7a12b0;
       transform: translateY(-1px);
     }
 
@@ -195,7 +195,7 @@
 
     .footer {
       margin-top: 40px;
-      color: #a39cb5;
+      color: rgba(255, 255, 255, 0.65);
       font-size: 12px;
       text-align: center;
     }
@@ -302,7 +302,7 @@
 
     </div>
 
-    <div class="footer">Projeto InteliCob — Versão 1.0 / 2026</div>
+    <div class="footer">InteliCob Versão 1.0 — 2026</div>
   </div>
 </body>
 
