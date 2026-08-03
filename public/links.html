@@ -15,7 +15,7 @@
     body {
       min-height: 100vh;
       font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-      background: linear-gradient(160deg, #a717eb 0%, #7a12b0 45%, #00c2e0 100%);
+      background: #8a6bc4;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -35,10 +35,10 @@
       height: 92px;
       border-radius: 50%;
       background: #ffffff;
+      border: 2px solid #9b6fd6;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
       margin-bottom: 18px;
     }
 
@@ -55,7 +55,7 @@
     }
 
     .name span {
-      color: #d6faff;
+      color: #d9f5f8;
     }
 
     .tagline {
@@ -73,19 +73,21 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 17px 20px;
+      padding: 16px 20px;
       border-radius: 999px;
       background: #ffffff;
-      color: #7a12b0;
+      border: 2px solid #9b6fd6;
+      color: #7a5aa8;
       font-size: 15px;
       font-weight: 700;
       text-decoration: none;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      transition: transform 0.15s ease;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
       margin-bottom: 14px;
     }
 
     .project-btn:hover {
+      background: #9b6fd6;
+      color: #ffffff;
       transform: translateY(-2px);
     }
 
@@ -101,10 +103,10 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 15px 20px;
+      padding: 14px 20px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.12);
-      border: 1.5px solid rgba(255, 255, 255, 0.55);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
       color: #ffffff;
       font-size: 14px;
       font-weight: 600;
@@ -116,7 +118,7 @@
 
     .link-btn:hover {
       background: #ffffff;
-      color: #7a12b0;
+      color: #7a5aa8;
       transform: translateY(-2px);
     }
 
@@ -183,7 +185,7 @@
 
     .member-links a:hover {
       background: #ffffff;
-      color: #7a12b0;
+      color: #7a5aa8;
       transform: translateY(-1px);
     }
 
@@ -207,10 +209,10 @@
 
     <div class="avatar">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 55 A 30 30 0 1 1 65 78" stroke="#a717eb" stroke-width="7" stroke-linecap="round" fill="none"
+        <path d="M20 55 A 30 30 0 1 1 65 78" stroke="#9b6fd6" stroke-width="7" stroke-linecap="round" fill="none"
           opacity="0.35" />
-        <path d="M70 45 A 30 30 0 0 1 40 82" stroke="#00c2e0" stroke-width="8" stroke-linecap="round" fill="none" />
-        <path d="M32 30 L52 50 L78 22 M78 22 H60 M78 22 V40" stroke="#7a12b0" stroke-width="7" stroke-linecap="round"
+        <path d="M70 45 A 30 30 0 0 1 40 82" stroke="#4fb8c4" stroke-width="8" stroke-linecap="round" fill="none" />
+        <path d="M32 30 L52 50 L78 22 M78 22 H60 M78 22 V40" stroke="#7a5aa8" stroke-width="7" stroke-linecap="round"
           stroke-linejoin="round" fill="none" />
       </svg>
     </div>
